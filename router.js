@@ -13,7 +13,7 @@ class Router {
         });
         this._router = true;
         this._routes = {};
-        this._middlewhare = {}
+        this._middlewhare = [];
     }
     static(path, dirname) {
         this._middlewhare[path+"*"] = (req, res, next) => {
@@ -41,10 +41,11 @@ class Router {
                 }
             }
             for (const m of Object.keys(route._middlewhare ? route._middlewhare : {})) {
-                this._middlewhare[path+m] = route._middlewhare[m];
+                this._middlewhare.push({path: path+m, route: route._middlewhare[m]});
             }
         } else if (typeof route === 'function') {
-            this._middlewhare[path] = route;
+            this._middlewhare.push({path: path, route: route});
+            // this._middlewhare[path] = route;
         }
     }
     add(method, path, route) {

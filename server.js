@@ -21,10 +21,10 @@ class Server {
             for (const v of Object.keys(this._virtuals ? this._virtuals : {})) {
                 if (!Utils.wildcard(v, req.headers["host"] ? req.headers["host"] : "")) continue;
                 const virtual = this._virtuals[v];
-                for (const m of Object.keys(virtual._middlewhare ? virtual._middlewhare : {})) {
-                    if (!Utils.wildcard(m, req.url)) continue;
+                for (const m of virtual._middlewhare) {
+                    if (!Utils.wildcard(m.path, req.url)) continue;
                     var next = false;
-                    virtual._middlewhare[m](req, res, () => {
+                    m.route(req, res, () => {
                         next = true;
                     });
                     if (!next) return;
