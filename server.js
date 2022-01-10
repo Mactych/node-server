@@ -24,11 +24,9 @@ class Server {
     get web() {
         return (req, res) => {
             init(req, res);
-            // now do virtuals
             for (const v of this._virtuals) {
                 if (!Utils.wildcard(v.host, req.headers["host"] ? req.headers["host"] : "")) continue;
                 for (const r of v.route._routes) {
-                    console.log(r);
                     if (r.method === "_MIDDLE") {
                         if (!Utils.wildcard(r.path, req.url)) continue;
                         var next = false;
@@ -43,20 +41,6 @@ class Server {
                         return;
                     }
                 }
-
-                /*                 for (const m of v.route._middlewhare) {
-                                    if (!Utils.wildcard(m.path, req.url)) continue;
-                                    var next = false;
-                                    m.route(req, res, () => {
-                                        next = true;
-                                    });
-                                    if (!next) return;
-                                }
-                                for (const r of Object.keys(v.route._routes[req.method] ? v.route._routes[req.method] : {})) {
-                                    if (!Utils.wildcard(r, req.url)) continue;
-                                    v.route._routes[req.method][r](req, res);
-                                    return;
-                                } */
             }
         };
     }
