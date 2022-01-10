@@ -37,7 +37,7 @@ class Server {
         return (req, res) => {
             init(req, res);
             for (const v of this._virtuals) {
-                if (!Utils.wildcard(v.host, req.headers["host"] ? req.headers["host"] : "")) continue;
+                if (!Utils.wildcard(v.host, req.headers["host"] ? req.headers["host"] : "")) continue;        
                 for (const r of v.route._routes) {
                     if (r.method === "_MIDDLE") {
                         if (!Utils.wildcard(r.path, req.url)) continue;

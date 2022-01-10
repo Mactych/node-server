@@ -11,16 +11,17 @@ class Router {
                 return this._add(method, path, route);
             };
         });
-        this.use = function (path, route) {
+        this.use = (path, route) => {
             if (route._router) {
                 for (const r of route._routes ? route._routes : []) {
-                    r["path"] = `${path}${r["path"]}`;
+                    r["path"] = path+r["path"];
                     this._routes.push(r);
                 }
             } else if (typeof route === 'function') {
                 this._routes.push({ method: "_MIDDLE", path: path, route: route});
             }
         };
+        this._routers = [];
         this._router = true;
         this._routes = [];
     }
@@ -42,7 +43,8 @@ class Router {
         });
     }
     _add(method, path, route) {
-        this._routes.push({ method: method.toUpperCase(), path: path, route: route });
+        const request = { method: method.toUpperCase(), path: path, route: route };
+        this._routes.push(request);
     }
     _delete(method, path) {
         for (const r in this._routes) {
