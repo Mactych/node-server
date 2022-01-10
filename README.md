@@ -1,6 +1,9 @@
 # Custom Server
 This server was build to be a lightweight webserver for all of my systems that require dynamic content, all static content is hosted on an Apache webserver.
 
+## To do
+- [ ] Create a router
+
 ## How to use
 Firstly declear the server class, example below.
 ```javascript
