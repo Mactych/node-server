@@ -3,11 +3,11 @@ const Router = require("./router.js");
 
 class Server {
     constructor() {
-        this._virtuals = {};
+        this._virtuals = [],
         this.Router = require("./router.js");
     }
     virtual(host, router) {
-        this._virtuals[host] = router;
+        this._virtuals.push({ host: host, route: router });
     }
     get web() {
         return (req, res) => {
@@ -18,10 +18,9 @@ class Server {
             };
 
             // now do virtuals
-            for (const v of Object.keys(this._virtuals ? this._virtuals : {})) {
-                if (!Utils.wildcard(v, req.headers["host"] ? req.headers["host"] : "")) continue;
-                const virtual = this._virtuals[v];
-                for (const m of virtual._middlewhare) {
+            for (const v of this._virtuals) {
+                if (!Utils.wildcard(v.host, req.headers["host"] ? req.headers["host"] : "")) continue;
+                for (const m of v.route._middlewhare) {
                     if (!Utils.wildcard(m.path, req.url)) continue;
                     var next = false;
                     m.route(req, res, () => {
@@ -29,9 +28,9 @@ class Server {
                     });
                     if (!next) return;
                 }
-                for (const r of Object.keys(virtual._routes[req.method] ? virtual._routes[req.method] : {})) {
+                for (const r of Object.keys(v.route._routes[req.method] ? v.route._routes[req.method] : {})) {
                     if (!Utils.wildcard(r, req.url)) continue;
-                    virtual._routes[req.method][r](req, res);
+                    v.route._routes[req.method][r](req, res);
                     return;
                 }
             }

@@ -16,7 +16,7 @@ class Router {
         this._middlewhare = [];
     }
     static(path, dirname) {
-        this._middlewhare[path+"*"] = (req, res, next) => {
+        this._middlewhare.push({path: path+"*", route: (req, res, next) => {
             if (req.method != "GET") return next();
             var staticFilePath = decodeURIComponent(req.url.substring(path.length) ? req.url.substring(path.length) : "/");
             if (staticFilePath.endsWith("/")) staticFilePath += "index.html";
@@ -30,7 +30,7 @@ class Router {
             res.writeHead(200, headers);
             staticFile.pipe(res, { end: true });
             return;
-        }
+        }});
     }
     use(path, route) {
         if (route._router) {
