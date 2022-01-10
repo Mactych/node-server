@@ -2,8 +2,6 @@
 This server was build to be a lightweight webserver for all of my systems that require dynamic content, all static content is hosted on an Apache webserver.
 
 ## To do
-- [ ] Create a router
-- [x] Fix issue where two middlewhares with the same path won't work, to fix this I must put them into an array
 
 ## How to use
 Firstly declear the server class, example below.
