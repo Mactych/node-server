@@ -1,6 +1,18 @@
 const Utils = new (require("./utils.js"))();
 const Router = require("./router.js");
 
+function init(req, res) {
+    req.query = Utils.query(req.url);
+    req.cookie = req.headers["cookie"] ? Utils.cookie(req.headers["cookie"]) : {};
+    res.redirect = function (location, status) {
+        res.writeHead(status ? status : 302, { "Location": location });
+    };
+    res.setHeaders = function(headers) {
+        for (const head of Object.keys(headers)) res.setHeader(head, headers[head]);
+        return;
+    }
+}
+
 class Server {
     constructor() {
         this._virtuals = [],
@@ -11,12 +23,7 @@ class Server {
     }
     get web() {
         return (req, res) => {
-            req.query = Utils.query(req.url);
-            req.cookie = req.headers["cookie"] ? Utils.cookie(req.headers["cookie"]) : {};
-            res.redirect = function (location, status) {
-                res.writeHead(status ? status : 302, { "Location": location });
-            };
-
+            init(req, res);
             // now do virtuals
             for (const v of this._virtuals) {
                 if (!Utils.wildcard(v.host, req.headers["host"] ? req.headers["host"] : "")) continue;
