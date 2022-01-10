@@ -11,6 +11,16 @@ class Router {
                 return this._add(method, path, route);
             };
         });
+        this.use = function (path, route) {
+            if (route._router) {
+                for (const r of route._routes ? route._routes : []) {
+                    r["path"] = `${path}${r["path"]}`;
+                    this._routes.push(r);
+                }
+            } else if (typeof route === 'function') {
+                this._routes.push({ method: "_MIDDLE", path: path, route: route});
+            }
+        };
         this._router = true;
         this._routes = [];
     }
@@ -30,16 +40,6 @@ class Router {
             staticFile.pipe(res, { end: true });
             return;
         });
-    }
-    use(path, route) {
-        if (route._router) {
-            for (const r of route._routes ? route._routes : []) {
-                r["path"] = `${path}${r["path"]}`;
-                this._routes.push(r);
-            }
-        } else if (typeof route === 'function') {
-            this._routes.push({ method: "_MIDDLE", path: path, route: route});
-        }
     }
     _add(method, path, route) {
         this._routes.push({ method: method.toUpperCase(), path: path, route: route });
