@@ -5,6 +5,7 @@ When creating routes, middlewhares or request you can use the `*` symbol to tell
 
 ## To do
 - [ ] Make setup and accessing of classes less painful
+- [ ] Make routers when a new route is added add to it's parent
 
 ## How to use
 Firstly declear the server class, example below.
