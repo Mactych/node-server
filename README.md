@@ -1,9 +1,10 @@
 # Custom Server
 This server was build to be a lightweight webserver for all of my systems that require dynamic content, all static content is hosted on an Apache webserver.
 
-When creating routes, middlewhares or request you can use the * symbol to tell the server that the path contains a wildcard.
+When creating routes, middlewhares or request you can use the `*` symbol to tell the server that the path contains a wildcard.
 
 ## To do
+- [ ] Make setup and accessing of classes less painful
 
 ## How to use
 Firstly declear the server class, example below.
