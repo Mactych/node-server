@@ -6,25 +6,22 @@ This server was build to be a lightweight webserver for all of my systems that r
 ## How to use
 Firstly declear the server class, example below.
 ```javascript
-const web = require("./server.js");
-const webserver = new web.Server();
+const webserver = new (require("./server.js"))();
 ```
 Create a new virtual site (this site will only respond to the hostname you provide)
 ```javascript
-const site = new web.Virtual("domainhere.com", webserver);
-```
-Add a middleware to a virtual site
-```javascript
-site.use("*", (req, res, next) => {
-    // intercepts url paths
-    console.log(req.url);
+const api = new webserver.Route();
+const route = new webserver.Route();
+// add route -> all request in the api route will point .../api
+route.use("/api" api);
+// setup middlewhare
+route.use("/", (req, res, next) => {
+    console.log(`middlewhare: ${req.url}`);
     next();
 });
-```
-Create a new route for the virtual site
-```javascript
-site.add("GET", "/", (req, res) => {
-    res.write("server example!");
+// get request
+route.get("/", (req, res) => {
+    res.write("hello world!");
     res.end();
 });
-```
+const site = new webserver.virtual("domainhere.com", route);
