@@ -16,7 +16,7 @@ function init(req, res) {
 class Server {
     constructor() {
         this._virtuals = [],
-            this.Router = require("./router.js");
+        this.Router = require("./router.js");
     }
     virtual(host, router) {
         this._virtuals.push({ host: host, route: router });
