@@ -1,9 +1,5 @@
-class Virtual extends Router {
-    constructor(hostname, server) {
-        super();
-        this.server = server;
-        this.hostname = hostname;
-    }
+class Virtual {
+
 }
 
 module.exports = Virtual;
