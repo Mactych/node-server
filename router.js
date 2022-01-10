@@ -8,7 +8,7 @@ class Router {
     constructor() {
         methods.forEach((method) => {
             this[method.toLowerCase()] = function (path, route) {
-                return this.add(method, path, route);
+                return this._add(method, path, route);
             };
         });
         this._router = true;
@@ -41,10 +41,14 @@ class Router {
             this._routes.push({ method: "_MIDDLE", path: path, route: route});
         }
     }
-    add(method, path, route) {
-        this._routes.push({ method: method, path: path, route: route });
+    _add(method, path, route) {
+        this._routes.push({ method: method.toUpperCase(), path: path, route: route });
     }
-    delete(method, path) {
+    _delete(method, path) {
+/*         console.log(this._routes);
+        for (const r of this._routes) {
+            console.log(r);
+        } */
         // cycles through the array and removes it
         // if (this._routes[method.toUpperCase()][path]) delete this._routes[method.toUpperCase()][path];
     }
