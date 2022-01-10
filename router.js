@@ -45,12 +45,13 @@ class Router {
         this._routes.push({ method: method.toUpperCase(), path: path, route: route });
     }
     _delete(method, path) {
-/*         console.log(this._routes);
-        for (const r of this._routes) {
-            console.log(r);
-        } */
-        // cycles through the array and removes it
-        // if (this._routes[method.toUpperCase()][path]) delete this._routes[method.toUpperCase()][path];
+        for (const r in this._routes) {
+            const route = this._routes[r];
+            if (route.method != method.toUpperCase()) continue;
+            if (route.path != path) continue;
+            this._routes.splice(r, r+1);
+            break;
+        }
     }
 }
 
