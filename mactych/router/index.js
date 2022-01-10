@@ -1,5 +1,5 @@
-class Router {
-
+function Router() {
+    
 }
 
 module.exports = Router;
