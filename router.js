@@ -13,15 +13,16 @@ class Router {
         });
         this.use = (path, route) => {
             if (route._router) {
+                route._parent = (this._parent ? this._parent : "")+path;
                 for (const r of route._routes ? route._routes : []) {
                     r["path"] = path+r["path"];
                     this._routes.push(r);
                 }
+                route._routes = this._routes;
             } else if (typeof route === 'function') {
                 this._routes.push({ method: "_MIDDLE", path: path, route: route});
             }
         };
-        this._routers = [];
         this._router = true;
         this._routes = [];
     }
@@ -44,11 +45,12 @@ class Router {
     }
     _add(method, path, route) {
         const request = { method: method.toUpperCase(), path: path, route: route };
+        if (this._parent) request["path"] = this._parent+path;
         this._routes.push(request);
     }
     _delete(method, path) {
-        for (const r in this._routes) {
-            const route = this._routes[r];
+        for (const r in this._parent ? this._parent._routes : this._routes) {
+            const route = (this._parent ? this._parent._routes : this._routes)[r];
             if (route.method != method.toUpperCase()) continue;
             if (route.path != path) continue;
             this._routes.splice(r, r+1);
