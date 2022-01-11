@@ -31,7 +31,13 @@ class Server {
         this.Router = require("./router.js");
     }
     virtual(host, router) {
-        this._virtuals.push({ host: host, route: router });
+        if (typeof host === "object") {
+            for (const h of host) {
+                this._virtuals.push({ host: h, route: router});
+            }
+        } else {
+            this._virtuals.push({ host: host, route: router });
+        }
     }
     get web() {
         return (req, res) => {
