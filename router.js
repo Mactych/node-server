@@ -47,7 +47,9 @@ const router = exports = module.exports = function () {
                 return res.redirect(urlPath+"/");
             }
             // SEND: the file to the client
-            const file = fs.createReadStream(filePath).on("error", (e) => console.error("Static-" + e));
+            const file = fs.createReadStream(filePath).on("error", (e) => {
+                return next();
+            });
             const headers = { "Content-Length": stat.size };
             const type = Mime.lookup(filePath, true);
             if (type) headers["Content-Type"] = type;
@@ -106,6 +108,8 @@ router.prototype._add = function () {
 * @public
 */
 router.prototype._delete = function (method, path) {
+    method = method.toUpperCase();
+    if (method === "MIDDLE") throw TypeError("router._delete() cannot delete middlware");
     for (const index in this._stack) {
         const route = this._stack[index];
         if (route.method === method.toUpperCase() && route.path === path) {

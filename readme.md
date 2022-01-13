@@ -2,8 +2,7 @@
 This was built to be as performant and straightforward as possible whilst keeping your applications happy since this framework extends the built-in HTTP server.
 
 ## Todo List
-* Make static function automatically find the index.html file when in a folder
-* Streamline middleware function to better fit in with the system
+* Improve code to be as efficent as it possibly can be
 
 ## How to use
 Firstly declear the server class, example below.
