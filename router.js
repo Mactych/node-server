@@ -1,4 +1,6 @@
 const Utils = require("./utilities.js");
+const Mime = require("./mime.js");
+const fs = require("fs");
 const methods = ["GET", "POST", "DELETE", "PUT", "PATCH"];
 const router = exports = module.exports = function () {
     this._stack = [];
@@ -20,6 +22,23 @@ const router = exports = module.exports = function () {
         } else {
             throw new TypeError("route.use() not a valid function or route to pass in");
         }
+    }
+    this.static = function(path, directory) {
+        this._add("MIDDLE", path+"*", function (req, res, next) {
+            if (req.method != "GET") return next();
+            var staticFilePath = decodeURIComponent(req.url.substring(path.length) ? req.url.substring(path.length) : "/");
+            if (staticFilePath.endsWith("/")) staticFilePath += "index.html";
+            if (!staticFilePath.startsWith("/")) staticFilePath = `/${staticFilePath}`;
+            if (!fs.existsSync(`${directory}${staticFilePath}`)) return next();
+            const staticFile = fs.createReadStream(`${directory}${staticFilePath}`).on("error", (e) => console.error("Static-" + e));
+            const stat = fs.statSync(`${directory}${staticFilePath}`);
+            const headers = { "Content-Length": stat.size };
+            const mType = Mime.lookup(staticFilePath, true);
+            if (mType) headers["Content-Type"] = mType;
+            res.writeHead(200, headers);
+            staticFile.pipe(res, { end: true });
+            return;
+        });
     }
 }
 router.prototype.handle = function (req, res) {
@@ -52,8 +71,11 @@ router.prototype.handle = function (req, res) {
 
     // ROUTING: methods
     for (const r of this._stack) {
-        const parsed = Utils.params(r.path, req.url);
-        if (parsed.params) req.params = parsed.params;
+        var parsed = {};
+        if (r.method != "MIDDLE") {
+            parsed = Utils.params(r.path, req.url);
+            if (parsed.params) req.params = parsed.params;
+        }
         if (!Utils.wildcard(parsed.path ? parsed.path : r.path, req.url)) continue;
         if (r.method === "MIDDLE") {
             var next = false;

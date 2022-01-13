@@ -10,6 +10,7 @@ web_localhost.use("*", (req, res, next) => {
     });
     next();
 });
+web_localhost.static("/", `${__dirname}/static`);
 web_localhost.get("/", (req, res) => {
     res.send("localhost home");
 });

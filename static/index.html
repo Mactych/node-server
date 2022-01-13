@@ -1,0 +1,334 @@
+<html>
+
+<head>
+    <title>Mac Upload</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <style>
+        html {
+            padding: 1em;
+            font-family: -apple-system, Helvetica;
+            background-image: url("./bg.svg");
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-attachment: fixed;
+            color: rgba(0, 0, 0, 0.40);
+        }
+
+        h1,
+        p {
+            margin: 0;
+        }
+
+        body {
+            text-align: center;
+        }
+
+        .labelButton {
+            color: rgba(0, 0, 0, 0.85);
+            background: rgba(0, 0, 0, 0.137);
+            width: 70%;
+            max-width: 300px;
+            border: 1px solid rgba(0, 0, 0, 0.25);
+            border-radius: 6px;
+            text-align: center;
+            border-radius: 0.4em;
+            display: inline-block;
+            margin-top: 10px;
+            padding: 1em;
+            font-size: 12px;
+            cursor: pointer;
+            outline: none;
+            transition-timing-function: ease-out;
+            transition: 0.3s;
+        }
+
+        .labelButton:hover {
+            transition: 0.3s;
+            border: 1px solid rgba(0, 0, 0, 0.45);
+            outline: none;
+        }
+
+        #upload {
+            display: none;
+        }
+
+        /* PROGRESS BAR STYLING */
+        progress[value]::-webkit-progress-bar {
+            padding: 4px;
+            background: rgba(0, 0, 0, 0.25);
+            border-radius: 6px;
+            -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.25), 0 1px rgba(255, 255, 255, 0.08);
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.25), 0 1px rgba(255, 255, 255, 0.08);
+        }
+
+        progress[value]::-webkit-progress-value {
+            background-color: #FFBF00;
+            border-radius: 4px;
+            background-image: -webkit-linear-gradient(top, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.05));
+            background-image: -moz-linear-gradient(top, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.05));
+            background-image: -o-linear-gradient(top, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.05));
+            background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.05));
+            -webkit-transition: 0.4s linear;
+            -moz-transition: 0.4s linear;
+            -o-transition: 0.4s linear;
+            transition: 0.4s linear;
+            -webkit-transition-property: width, background-color;
+            -moz-transition-property: width, background-color;
+            -o-transition-property: width, background-color;
+            transition-property: width, background-color;
+        }
+
+        .progress-more[value]::-webkit-progress-value {
+            -webkit-box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.25), inset 0 1px rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.25), inset 0 1px rgba(255, 255, 255, 0.1);
+        }
+
+        progress {
+            -webkit-appearance: none;
+            appearance: none;
+            height: 20px;
+            width: 90%;
+            max-width: 515px;
+            margin-top: 20px;
+        }
+
+
+        a {
+            text-decoration: none;
+            color: #000;
+        }
+
+        p {
+            text-decoration: none;
+            color: #000;
+            font-weight: lighter;
+        }
+
+        .cloudIcon {
+            width: 45%;
+            text-align: center;
+            max-width: 90px;
+        }
+
+        #overlay {
+            position: fixed;
+            /* Sit on top of the page content */
+            display: none;
+            /* Hidden by default */
+            width: 100%;
+            /* Full width (cover the whole page) */
+            height: 100%;
+            /* Full height (cover the whole page) */
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            /* Black background with opacity */
+            z-index: 2;
+            /* Specify a stack order in case you're using a different order for other elements */
+            cursor: pointer;
+            /* Add a pointer on hover */
+        }
+
+        .disclaimer {
+            width: 90%;
+            max-width: 515px;
+            margin: 0 auto;
+            margin-top: 20px;
+            font-size: 14px;
+        }
+
+        .disclaimer p {
+            margin-bottom: 5px;
+        }
+
+
+
+        .meter {
+            margin: 0 auto;
+        }
+
+
+        .meter {
+            box-sizing: content-box;
+            /* Can be anything */
+            position: relative;
+            padding: 4px;
+            background: rgba(0, 0, 0, 0.25);
+            border-radius: 6px;
+            -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.25), 0 1px rgba(255, 255, 255, 0.08);
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.25), 0 1px rgba(255, 255, 255, 0.08);
+
+            height: 20px;
+            width: 90%;
+            max-width: 515px;
+            margin-top: 20px;
+        }
+
+        .meter>span {
+            background-color: #FFBF00;
+            border-radius: 4px;
+            background-image: -webkit-linear-gradient(top, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.05));
+            background-image: -moz-linear-gradient(top, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.05));
+            background-image: -o-linear-gradient(top, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.05));
+            background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.05));
+            -webkit-transition: 0.4s linear;
+            -moz-transition: 0.4s linear;
+            -o-transition: 0.4s linear;
+            transition: 0.4s linear;
+            -webkit-transition-property: width, background-color;
+            -moz-transition-property: width, background-color;
+            -o-transition-property: width, background-color;
+            transition-property: width, background-color;
+            display: block;
+            height: 100%;
+        }
+
+        .destLoc {
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+            margin-top: 20px;
+            font-weight: normal;
+        }
+
+        #final-content {
+            width: 90%;
+            max-width: 515px;
+            margin: 0 auto;
+        }
+    </style>
+
+
+
+
+</head>
+
+<body>
+    <div id="overlay"></div>
+    <img src="./cloud.svg" class="cloudIcon">
+    <h1>Mac Upload</h1>
+    <!-- <p><a href="mailto:uploads@macstudio.pro">uploads@macstudio.pro</a></p> -->
+    <div id="change-content">
+        <div id="progress-content">
+            <div class="meter">
+                <span id="meter-progress" style="width: 0%"></span>
+            </div>
+            <!-- <progress id="uploadProgress" value="0"></progress> -->
+        </div>
+        <label for="upload" class="labelButton">Upload File</label>
+        <input id="upload" type="file"></input>
+        <div id="final-content"></div>
+    </div>
+    <div class="disclaimer">
+        <p>All the files you might download from this website are the responsibility of their respective uploaders. This
+            is an anonymous service - we don't keep logs of who uploads and downloads files to and from our website nor
+            other personal information. We are not a legal entity, and we don't run this website for profit. This is a
+            hobby project run by a small group of "friends", primarily for educational purposes.</p>
+        <p>Nevertheless, we do support intellectual property rights. We obey the laws of our jurisdiction (Australia),
+            we regularly audit the uploaded content to the best of our abilities and remove all material infringing on
+            intellectual property rights and/or other relevant legislation.</p>
+        <p>If you still find your copyrighted material shared on this website, please feel free to send your abuse
+            notice, copyright complaints, DCMA notices and EU's Electronic Commerce Directive Article 14 compliant
+            requests to <a style="font-weight: normal;"
+                href="mailto:complaints@macstudio.pro">complaints@macstudio.pro</a>. We will remove it right
+            away.</p>
+    </div>
+</body>
+<script>
+    const progressBar = document.getElementById("meter-progress");
+    const input = document.getElementById("upload");
+    var totalSize = 0; // bytes
+    var uploadedSize = 0; // bytes
+    input.onclick = function () { // allows the same file to be selected
+        this.value = null;
+    };
+    function progress(evt) {
+        document.getElementById("progress-content").style.display = "block";
+        document.getElementById("final-content").style.display = "none";
+        const percentage = Math.round(((evt.loaded + uploadedSize) / totalSize) * 100);
+        progressBar.style.width = percentage + "%";
+    }
+    function resetProgress() {
+        totalSize = 0;
+        uploadedSize = 0;
+        progressBar.style.width = "0%";
+        document.getElementById("progress-content").style.display = "block";
+        document.getElementById("final-content").style.display = "none";
+    }
+    function createChunks(file, chunkSize) {
+        let startPointer = 0;
+        let endPointer = file.size;
+        let chunks = [];
+        while (startPointer < endPointer) {
+            let newStartPointer = startPointer + chunkSize;
+            chunks.push(file.slice(startPointer, newStartPointer));
+            startPointer = newStartPointer;
+        }
+        return chunks;
+    }
+    async function uploadChunk(url, data) {
+        return new Promise(async (resolve, reject) => {
+            var uploadData = new XMLHttpRequest();
+            // https://cdn.macstudio.pro
+            uploadData.open("POST", `/upload/${url}`, true);
+            uploadData.setRequestHeader("content-range", `bytes ${uploadedSize}-${(uploadedSize + data.size) - 1}/${totalSize}`);
+            uploadData.upload.addEventListener("progress", progress, false);
+            uploadData.addEventListener("error", resetProgress, false);
+            uploadData.addEventListener("abort", resetProgress, false);
+            uploadData.onload = function () {
+                if (uploadData.readyState == 4) {
+                    resolve(uploadData);
+                };
+            }
+            uploadData.send(data);
+        });
+    }
+
+    input.addEventListener('change', async () => {
+        resetProgress();
+        for (const file of input.files) {
+            var xhr = new XMLHttpRequest();
+            // https://cdn.macstudio.pro
+            xhr.open("GET", `/uploadSession/${file.name}`, true);
+            /* xhr.upload.addEventListener("progress", progress, false); */
+            xhr.addEventListener("error", resetProgress, false);
+            xhr.addEventListener("abort", resetProgress, false);
+            xhr.onload = async function () {
+                if (xhr.readyState === 4) {
+                    try {
+                        if (xhr.status === 409) {
+                            resetProgress();
+                            return alert("conflict, please try again with a different file name");
+                        } else if (xhr.status != 200) throw Error(xhr.status);
+                        const uploadURL = xhr.responseText;
+                        totalSize = file.size;
+                        for (const chunk of createChunks(file, 62914560)) { // chunk size 60 mb
+                            const ud = await uploadChunk(uploadURL, chunk);
+                            if (ud.status === 202) {
+                                uploadedSize += chunk.size
+                            } else if (ud.status === 200 || ud.status === 201) {
+                                resetProgress();
+                                document.getElementById("progress-content").style.display = "none";
+                                document.getElementById("final-content").style.display = "block";
+                                document.getElementById("final-content").innerHTML = `<p class="destLoc"><a href="https://cdn.macstudio.pro/uploads/${file.name}">https://cdn.macstudio.pro/uploads/${file.name}</a></p>`;
+                            } else {
+                                throw Error(ud.status);
+                            }
+                        }
+                    } catch (e) {
+                        resetProgress();
+                        return alert(`bad request error ${e}`);
+                        console.error(e);
+                    }
+                }
+            }
+            xhr.send(file);
+        }
+    });
+</script>
+
+</html>
