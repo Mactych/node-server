@@ -10,19 +10,19 @@ web_localhost.use("*", (req, res, next) => {
     });
     next();
 });
-web_localhost.static("/", `${__dirname}/static`);
+web_localhost.static("/", `${__dirname}/server/routes/uploader/static`);
 web_localhost.get("/", (req, res) => {
     res.send("localhost home");
 });
 web_default.get("*", (req,res) => {
-    res.writeHead(404);
+    // res.writeHead(404);
     res.send("404 not found");
 });
 
-// use the virtual network
 
-app.virtual("localhost", web_localhost);
-app.virtual("*", web_default);
+// use the virtual network
+app.virtual("*", web_localhost);
+/* app.virtual("*", web_default); */
 app.listen(80, (port) => {
     console.log(`listening on port ` + port);
 });

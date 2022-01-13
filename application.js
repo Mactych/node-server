@@ -1,5 +1,7 @@
 const Virtual = require("./virtual.js");
 const Utils = require("./utilities.js");
+const Response = require("./response.js");
+const Request = require("./request.js");
 const http = require("http");
 var application = exports = module.exports = {};
 
@@ -7,10 +9,11 @@ application.init = function() {
     this._virtuals = [];
 }
 application.handle = function (req, res) {
-    req.host = req.headers["host"];
+    Object.setPrototypeOf(req, Request);
+    Object.setPrototypeOf(res, Response);
     for (const v of this._virtuals) {
-        if (!Utils.wildcard(v._domain, req.host)) continue;
-        if (v._router.handle(req, res)) return;
+        if (!Utils.wildcard(v._domain, req.headers["host"])) continue;
+        v._router.handle(req, res);
     }
 }
 application.virtual = function(domain, router) {

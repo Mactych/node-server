@@ -37,7 +37,6 @@ const router = exports = module.exports = function () {
             if (mType) headers["Content-Type"] = mType;
             res.writeHead(200, headers);
             staticFile.pipe(res, { end: true });
-            return;
         });
     }
 }
@@ -49,26 +48,6 @@ router.prototype.handle = function (req, res) {
     req.query = Utils.query(req.url);
     req.url.slice(0, req.url.lastIndexOf("?"));
     req.cookie = req.headers["cookie"] ? Utils.cookie(req.headers["cookie"]) : {};
-
-    // EXTENDED: functions
-    res.send = function (body) {
-        if (typeof body === 'string') res.setHeader("Content-Type", Mime.types["html"]);
-        res.write(body);
-        res.end();
-        return res;
-    }
-    res.status = function (status) {
-        res.writeHead(status);
-        return res;
-    }
-    res.redirect = function (location, status) {
-        res.writeHead(status ? status : 302, { "Location": location });
-        return res;
-    };
-    res.setHeaders = function (headers) {
-        for (const head of Object.keys(headers)) res.setHeader(head, headers[head]);
-        return;
-    };
 
     // ROUTING: methods
     for (const r of this._stack) {
