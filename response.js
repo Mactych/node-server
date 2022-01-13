@@ -1,16 +1,15 @@
+const Mime = require("./mime.js");
 const http = require("http");
 var res = module.exports = Object.create(http.ServerResponse.prototype);
 res.send = function (body) {
-    const headers = {};
-    if (typeof body === 'string') headers["Content-Type"] = Mime.types["html"];
-    this.writeHead(200, headers);
+    if (typeof body === 'string') this.setHeader("Content-Type", Mime.types["html"]);
     this.write(body);
     this.end();
-    return res;
+    return this;
 }
 res.status = function (status) {
     this.writeHead(status);
-    return res;
+    return this;
 }
 res.redirect = function (location, status) {
     this.writeHead(status ? status : 302, { "Location": location });
