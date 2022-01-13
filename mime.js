@@ -1,5 +1,5 @@
 const mime = function (data) {
-    if (!data) data = require("./mime.json");
+    if (!data) data = require("./types.json");
     this.types = {};
     for (var type in data) {
         var exts = data[type];

@@ -56,7 +56,6 @@ const router = exports = module.exports = function () {
 */
 router.prototype.handle = function (req, res) {
     // EXTENDED: Modify url
-    if (req.url.substr(1).endsWith("/")) req.url = req.url.slice(0, -1);
     req.url = req.url.lastIndexOf("?") != -1 ? req.url.slice(0, req.url.lastIndexOf("?")) : req.url;
     // ROUTING: methods
     for (const r of this._stack) {
@@ -70,7 +69,7 @@ router.prototype.handle = function (req, res) {
             parsed = Utils.params(r.path, req.url);
             if (parsed.params) req.params = parsed.params;
         }
-        if (!Utils.wildcard(parsed.path ? parsed.path : r.path, req.url)) continue;
+        if (!Utils.wildcard((parsed.path ? parsed.path : r.path), r.path.endsWith("/") ? req.path : (req.url.substr(1).endsWith("/") ? req.url.slice(0, -1) : req.url)) ) continue;
         if (r.method === req.method) {
             r.route(req, res);
             return true;

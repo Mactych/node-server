@@ -14,3 +14,4 @@
     * Add: definitions for request functions
     * Fix: query not being remove from urls
     * Change: make middleware functions not use a path
+    * Fix: A route would not be used if it ended with '/' because it was always removed, this issue is fixed

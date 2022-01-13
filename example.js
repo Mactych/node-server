@@ -10,7 +10,10 @@ web_localhost.use((req, res, next) => {
     });
     next();
 });
-/* web_localhost.static("/", `${__dirname}/server/routes/uploader/static`); */
+web_localhost.static("/", `${__dirname}/server/routes/uploader/static`);
+web_localhost.get("/hello", (req, res) => {
+    res.html("hi");
+});
 web_localhost.get("/", (req, res) => {
     res.html("localhost home");
 });
