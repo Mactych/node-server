@@ -34,7 +34,8 @@ const router = exports = module.exports = function () {
     this.static = function (path, directory) {
         this._add("MIDDLE", function (req, res, next) {
             if (req.method != "GET" || !req.url.startsWith(path)) return next();
-            var filePath = directory+(directory.endsWith("/") ? "" : "/")+decodeURIComponent(req.url.substring(path.length) ? req.url.substring(path.length) : "/");
+            var urlPath = decodeURIComponent(req.url.substring(path.length) ? req.url.substring(path.length) : "/");
+            var filePath = directory+(directory.endsWith("/") ? "" : "/")+urlPath;
             // MANIPULATE: changes the path if needed
             if (!filePath.startsWith("/")) filePath = "/"+filePath;
             if (filePath.endsWith("/")) filePath += "index.html";
@@ -43,7 +44,7 @@ const router = exports = module.exports = function () {
             const stat = fs.statSync(filePath);
             if (!filePath.endsWith("/") && fs.statSync(filePath).isDirectory()) {
                 if (!fs.existsSync(`${filePath}/index.html`)) return next();
-                return res.redirect(filePath+"/");
+                return res.redirect(urlPath+"/");
             }
             // SEND: the file to the client
             const file = fs.createReadStream(filePath).on("error", (e) => console.error("Static-" + e));
