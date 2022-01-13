@@ -1,7 +1,6 @@
 const Utils = require("./utilities.js");
 const methods = ["GET", "POST", "DELETE", "PUT", "PATCH"];
 const router = exports = module.exports = function () {
-    // constructor function
     this._stack = [];
 }
 router.prototype.handle = function (req, res) {
@@ -75,7 +74,6 @@ router.prototype.use = function (path, route) {
     } else {
         throw new TypeError("route.use() not a valid function or route to pass in");
     }
-    // either inits a middlewhare or inherits another route.
 }
 for (const m of methods) {
     router.prototype[m.toLowerCase()] = function (path, route) {
