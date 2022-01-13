@@ -41,13 +41,14 @@ router.prototype.handle = function (req, res) {
             r.route(req, res, () => {
                 next = true;
             });
-            if (!next) return;
+            if (!next) return true;
         }
         if (r.method === req.method) {
             r.route(req, res);
-            return;
+            return true;
         }
     }
+    return false; // if not resolved cycle through other virtuals
 };
 router.prototype._add = function (method, path, route) {
     this._stack.push({ method: method, path: this._path ? this._path+path : path, route: route });

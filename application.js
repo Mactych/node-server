@@ -10,8 +10,7 @@ application.handle = function (req, res) {
     req.host = req.headers["host"];
     for (const v of this._virtuals) {
         if (!Utils.wildcard(v._domain, req.host)) continue;
-        v._router.handle(req, res);
-        return;
+        if (v._router.handle(req, res)) return;
     }
 }
 application.virtual = function(domain, router) {
