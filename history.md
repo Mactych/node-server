@@ -2,4 +2,4 @@
 ===================
 
     * Add and correct functions within the Reponse.
-    * Update res.send() to use the proper 'utf8' encoding.
+        - Update res.send() to use the proper 'utf8' encoding.
