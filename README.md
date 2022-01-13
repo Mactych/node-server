@@ -4,9 +4,11 @@ This server was build to be a lightweight webserver for all of my systems that r
 When creating routes, middlewhares or request you can use the `*` symbol to tell the server that the path contains a wildcard.
 
 ## How to use
-Firstly declear the server class, example below.
+Firstly create the function for the server, example shown below.
 ```javascript
-const webserver = new (require("./server.js"))();
+const http = require("http"); // will be used to listen for the server
+const server = require("./server.js")
+const webserver = server();
 ```
 Create a new virtual site (this site will only respond to the hostname you provide)
 ```javascript
@@ -21,7 +23,8 @@ route.use("/", (req, res, next) => {
 });
 // get request
 route.get("/", (req, res) => {
-    res.write("hello world!");
-    res.end();
+    res.html("<html><body><h1>hello world!</h1></body></html>");
 });
-const site = new webserver.virtual("domainhere.com", route);
+webserver.virtual("domainhere.com", route);
+http.createServer(webserver).listen(80);
+```
