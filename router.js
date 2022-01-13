@@ -48,7 +48,7 @@ router.prototype.handle = function (req, res) {
     // ROUTING: methods
     for (const r of this._stack) {
         var parsed = {};
-        if (r.method != "MIDDLE") {
+        if (r.method != "MIDDLE" && r.path.includes(":")) {
             parsed = Utils.params(r.path, req.url);
             if (parsed.params) req.params = parsed.params;
         }
