@@ -25,10 +25,22 @@ Utils.defineGetter(req, 'host', function() {
     return this.headers["host"];
 });
 
+/**
+ * Return the cookies sent with a request
+ *
+ * @return {Object}
+ * @public
+ */
 Utils.defineGetter(req, 'cookie', function() {
     return this.headers["cookie"] ? Utils.cookie(this.headers["cookie"]) : {};
 });
 
+/**
+ * Return the query options
+ *
+ * @return {Object}
+ * @public
+ */
 Utils.defineGetter(req, 'query', function() {
     return Utils.query(this.url);
 });
