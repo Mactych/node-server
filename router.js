@@ -11,9 +11,7 @@ const router = exports = module.exports = function () {
     }
     this.use = function () {
         if (typeof arguments[0] === 'string' && arguments[1]._stack) {
-            for (const r of arguments[1]._stack) {
-                r.path = path+r.path;
-            }
+            for (const r of arguments[1]._stack) r.path = path+r.path;
             this._stack = this._stack.concat(arguments[1]._stack);
             arguments[1]._path = path;
             arguments[1]._stack = this._stack;
