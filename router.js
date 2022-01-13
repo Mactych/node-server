@@ -9,19 +9,20 @@ const router = exports = module.exports = function () {
             this._add(m, path, route);
         }
     }
-    this.use = function (path, route) {
-        if (route._stack) {
-            for (const r of route._stack) {
+    this.use = function () {
+        if (typeof arguments[0] === 'string' && arguments[1]._stack) {
+            for (const r of arguments[1]._stack) {
                 r.path = path+r.path;
             }
-            this._stack = this._stack.concat(route._stack);
-            route._path = path;
-            route._stack = this._stack;
-        } else if (typeof route === "function") {
-            this._add("MIDDLE", path, route);
-        } else {
-            throw new TypeError("route.use() not a valid function or route to pass in");
+            this._stack = this._stack.concat(arguments[1]._stack);
+            arguments[1]._path = path;
+            arguments[1]._stack = this._stack;
+            return;
+        } else if (typeof arguments[0] === 'function') {
+            this._middle(arguments[0]);
+            return;
         }
+        throw new TypeError("route.use() not a valid function or route to pass in");
     }
     this.static = function(path, directory) {
         this._add("MIDDLE", path+"*", function (req, res, next) {
@@ -47,18 +48,22 @@ router.prototype.handle = function (req, res) {
     // ROUTING: methods
     for (const r of this._stack) {
         var parsed = {};
-        if (r.method != "MIDDLE" && r.path.includes(":")) {
-            parsed = Utils.params(r.path, req.url);
-            if (parsed.params) req.params = parsed.params;
-        }
-        if (!Utils.wildcard(parsed.path ? parsed.path : r.path, req.url)) continue;
         if (r.method === "MIDDLE") {
             var next = false;
             r.route(req, res, () => {
                 next = true;
             });
-            if (!next) return true;
+            if (next) {
+                continue;
+            } else if (!next) {
+                return true;
+            }
         }
+        if (r.path.includes(":")) {
+            parsed = Utils.params(r.path, req.url);
+            if (parsed.params) req.params = parsed.params;
+        }
+        if (!Utils.wildcard(parsed.path ? parsed.path : r.path, req.url)) continue;
         if (r.method === req.method) {
             r.route(req, res);
             return true;
@@ -66,6 +71,9 @@ router.prototype.handle = function (req, res) {
     }
     return false; // if not resolved cycle through other virtuals
 };
+router.prototype._middle = function(route) {
+    this._stack.push({ method: "MIDDLE", route: route });
+}
 router.prototype._add = function (method, path, route) {
     this._stack.push({ method: method, path: this._path ? this._path+path : path, route: route });
 }

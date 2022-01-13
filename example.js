@@ -3,7 +3,7 @@ const app = server();
 const web_default = new server.Router();
 const web_localhost = new server.Router();
 
-web_localhost.use("*", (req, res, next) => {
+web_localhost.use((req, res, next) => {
     res.setHeaders({
         "Connection": "keep-alive",
         "Server": "MacStudio"

@@ -13,3 +13,4 @@
     * Fix: res.redirect() function
     * Add: definitions for request functions
     * Fix: query not being remove from urls
+    * Change: make middlewhare functions not use a path
