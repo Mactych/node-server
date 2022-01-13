@@ -52,7 +52,9 @@ router.prototype.handle = function (req, res) {
 
     // EXTENDED: functions
     res.send = function (body) {
-        res.setHeader("Content-Type", Mime.types["html"]);
+        if (typeof body === 'string') {
+            res.setHeader("Content-Type", Mime.types["html"]);
+        }
         res.write(body);
         res.end();
         return res;
