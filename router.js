@@ -11,7 +11,6 @@ router.prototype.handle = function (req, res) {
     // EXTENDED: variables
     req.query = Utils.query(req.url);
     req.url.slice(0, req.url.lastIndexOf("?"));
-    // req.params = Utils.params(req.url);
     req.cookie = req.headers["cookie"] ? Utils.cookie(req.headers["cookie"]) : {};
 
     // EXTENDED: functions
@@ -55,7 +54,13 @@ router.prototype._add = function (method, path, route) {
     this._stack.push({ method: method, path: this._path ? this._path+path : path, route: route });
 }
 router.prototype._delete = function (method, path) {
-    // deletes the route from the routes
+    for (const index in this._stack) {
+        const route = this._stack[index];
+        if (route.method === method.toUpperCase() && route.path === path) {
+            this._stack.splice(index, index+1);
+            break;
+        }
+    }
 }
 router.prototype.use = function (path, route) {
     if (route._stack) {
