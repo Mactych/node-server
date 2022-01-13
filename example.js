@@ -14,9 +14,6 @@ web_localhost.static("/", `${__dirname}/static`);
 web_localhost.get("/", (req, res) => {
     res.send("localhost home");
 });
-/* web_localhost.get("/hw1/:name", (req, res) => {
-    res.send("Hello World-1 " + req.params.name);
-}); */
 web_default.get("*", (req,res) => {
     res.writeHead(404);
     res.send("404 not found");
