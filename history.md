@@ -11,3 +11,5 @@
     * Move: req extended variables into their prototype file
     * Prevent: params being added if there are none
     * Fix: res.redirect() function
+    * Add: definitions for request functions
+    * Fix: query not being remove from urls

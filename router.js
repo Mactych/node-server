@@ -43,8 +43,7 @@ const router = exports = module.exports = function () {
 router.prototype.handle = function (req, res) {
     // EXTENDED: Modify url
     if (req.url.substr(1).endsWith("/")) req.url = req.url.slice(0, -1);
-    req.url.slice(0, req.url.lastIndexOf("?"));
-
+    req.url = req.url.lastIndexOf("?") != -1 ? req.url.slice(0, req.url.lastIndexOf("?")) : req.url;
     // ROUTING: methods
     for (const r of this._stack) {
         var parsed = {};
