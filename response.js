@@ -13,7 +13,7 @@ res.json = function (json) {
     this.send(JSON.stringify(json), "json");
 }
 res.status = function (status) {
-    this.writeHead(status);
+    this.statusCode = status;
     return this;
 }
 res.redirect = function (location, status) {
