@@ -14,5 +14,4 @@ mime.prototype.lookup = function (path, charset) {
     if (charset && (/^text\/|^application\/(javascript|json)/).test(type)) type += "; charset=UTF-8";
     return type;
 }
-
 exports = module.exports = new mime();

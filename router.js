@@ -93,7 +93,7 @@ router.prototype.handle = function (req, res) {
 */
 router.prototype._add = function () {
     const options = { method: arguments[0] };
-    if (typeof arguments[1] === "string" && typeof arguments[2] === "function") { // this is a route
+    if (typeof arguments[1] === "string" && typeof arguments[2] === "function") {
         options["path"] = this._path ? this._path + arguments[1] : arguments[1];
         options["route"] = arguments[2];;
     } else if (typeof arguments[1] === "function") options["route"] = arguments[1];
