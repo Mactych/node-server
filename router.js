@@ -9,6 +9,10 @@ const router = exports = module.exports = function () {
             this._add(m, path, route);
         }
     }
+        /**
+ * @param {function} middleware
+ * @public
+ */
     this.use = function () {
         if (typeof arguments[0] === 'string' && arguments[1]._stack) {
             for (const r of arguments[1]._stack) r.path = path+r.path;
@@ -17,13 +21,18 @@ const router = exports = module.exports = function () {
             arguments[1]._stack = this._stack;
             return;
         } else if (typeof arguments[0] === 'function') {
-            this._middle(arguments[0]);
+            this._add("MIDDLE", arguments[0]);
             return;
         }
         throw new TypeError("route.use() not a valid function or route to pass in");
     }
+    /**
+ * @param {string} path
+ * @param {string} directory
+ * @public
+ */
     this.static = function(path, directory) {
-        this._add("MIDDLE", path+"*", function (req, res, next) {
+        this._add("MIDDLE", function (req, res, next) {
             if (req.method != "GET") return next();
             var staticFilePath = decodeURIComponent(req.url.substring(path.length) ? req.url.substring(path.length) : "/");
             if (staticFilePath.endsWith("/")) staticFilePath += "index.html";
@@ -48,14 +57,8 @@ router.prototype.handle = function (req, res) {
         var parsed = {};
         if (r.method === "MIDDLE") {
             var next = false;
-            r.route(req, res, () => {
-                next = true;
-            });
-            if (next) {
-                continue;
-            } else if (!next) {
-                return true;
-            }
+            r.route(req, res, () => next = true);
+            if (next) continue; else if (!next) return true;
         }
         if (r.path.includes(":")) {
             parsed = Utils.params(r.path, req.url);
@@ -69,12 +72,26 @@ router.prototype.handle = function (req, res) {
     }
     return false; // if not resolved cycle through other virtuals
 };
-router.prototype._middle = function(route) {
-    this._stack.push({ method: "MIDDLE", route: route });
+    /**
+ * @param {string} method
+ * @param {string} path
+ * @param {function} route
+ * @public
+ */
+router.prototype._add = function () {
+    const options = { method: arguments[0] };
+    if (typeof arguments[1] === "string" && typeof arguments[2] === "function") { // this is a route
+        options["path"] = this._path ? this._path+arguments[1] : arguments[1];
+        options["route"] = arguments[2];;
+    } else if (typeof arguments[1] === "function") options["route"] = arguments[1];
+    if (typeof arguments[0] === "string") return this._stack.push(options);
+    throw new TypeError("router._add() invalid options");
 }
-router.prototype._add = function (method, path, route) {
-    this._stack.push({ method: method, path: this._path ? this._path+path : path, route: route });
-}
+    /**
+ * @param {string} method
+ * @param {string} path
+ * @public
+ */
 router.prototype._delete = function (method, path) {
     for (const index in this._stack) {
         const route = this._stack[index];
