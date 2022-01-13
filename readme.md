@@ -1,15 +1,2 @@
-# NodeJS Workers
-Spawn workers with ease, a simple function to make everything hassle-free.
-## Example
-```javascript
-function workerFunction() {
-    // code for each worker here
-}
-
-const Worker = require("./worker.js");
-Worker(workerFunction, { exit: function(worker, code, signal){
-    console.log(`worker ${worker.process.pid} has died`);
-, spawn: function() {
-    console.log(`worker launched`);
-}});
-```
+# Node-Server Framework
+This was built to be as performant and straightforward as possible whilst keeping your applications happy since this framework extends the built-in HTTP server.
