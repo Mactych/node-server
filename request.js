@@ -11,6 +11,9 @@ var req = module.exports = Object.create(http.IncomingMessage.prototype);
 Utils.defineGetter(req, 'protocol', function() {
     return this.connection.encrypted ? 'https' : 'http';;
 });
+Utils.defineGetter(req, 'secure', function() {
+    return this.protocol === "https";
+});
 
 /**
  * Return the host used for the request

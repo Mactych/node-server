@@ -18,6 +18,7 @@ res.status = function (status) {
 }
 res.redirect = function (location, status) {
     this.writeHead(status ? status : 302, { "Location": location });
+    this.end();
     return this;
 };
 res.setHeaders = function (headers) {
