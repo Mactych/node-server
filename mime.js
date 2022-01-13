@@ -1,4 +1,4 @@
-const mime = exports = module.exports = function (data) {
+const mime = function (data) {
     if (!data) data = require("./mime.json");
     this.types = {};
     for (var type in data) {
@@ -14,3 +14,5 @@ mime.prototype.lookup = function (path, charset) {
     if (charset && (/^text\/|^application\/(javascript|json)/).test(type)) type += "; charset=UTF-8";
     return type;
 }
+
+exports = module.exports = new mime();
