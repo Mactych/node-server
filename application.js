@@ -18,7 +18,13 @@ application.handle = function (req, res) {
     }
 }
 application.virtual = function(domain, router) {
-    this._virtuals.push(new Virtual(domain, router));
+    if (typeof domain === "object") {
+        for (const d of domain) {
+            this._virtuals.push(new Virtual(domain, router));
+        }
+    } else {
+        this._virtuals.push(new Virtual(domain, router));
+    }
 };
 application.listen = function(port, callback) {
     http.createServer(this).listen(port);
