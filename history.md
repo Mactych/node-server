@@ -9,3 +9,4 @@
     * Add: Getter for req.host
     * Fix: res.status() function from instead of writingHead to set the statusCode
     * Move: req extended variables into their prototype file
+    * Prevent: params being added if there are none
