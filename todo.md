@@ -1,4 +1,4 @@
 To Do List
 ===================
 
-    * Make static function work properly
+    * Make static function automatically find the index.html file when in a folder
