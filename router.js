@@ -1,6 +1,7 @@
 const Utils = require("./utilities.js");
 const Mime = require("./mime.js");
 const fs = require("fs");
+const { createRequire } = require("module");
 const methods = ["GET", "POST", "DELETE", "PUT", "PATCH", "HEAD"];
 const router = exports = module.exports = function () {
     this._stack = [];
@@ -35,26 +36,62 @@ const router = exports = module.exports = function () {
         this._add("MIDDLE", function (req, res, next) {
             if (req.method != "GET" || !req.url.startsWith(path)) return next();
             var urlPath = decodeURIComponent(req.url.substring(path.length) ? req.url.substring(path.length) : "/");
-            var filePath = directory+(directory.endsWith("/") ? "" : "/")+urlPath;
+            var filePath = directory + (directory.endsWith("/") ? "" : "/") + urlPath;
             // MANIPULATE: changes the path if needed
-            if (!filePath.startsWith("/")) filePath = "/"+filePath;
+            if (!filePath.startsWith("/")) filePath = "/" + filePath;
             if (filePath.endsWith("/")) filePath += "index.html";
             // CHECK: if should server content
             if (!fs.existsSync(filePath)) return next();
             const stat = fs.statSync(filePath);
             if (!filePath.endsWith("/") && fs.statSync(filePath).isDirectory()) {
                 if (!fs.existsSync(`${filePath}/index.html`)) return next();
-                return res.redirect(urlPath+"/");
+                return res.redirect(urlPath + "/");
             }
             // SEND: the file to the client
-            const file = fs.createReadStream(filePath).on("error", (e) => {
-                return next();
-            });
-            const headers = { "Content-Length": stat.size };
             const type = Mime.lookup(filePath, true);
-            if (type) headers["Content-Type"] = type;
-            res.writeHead(200, headers);
-            file.pipe(res, { end: true });
+            if (type) res.setHeader('Content-Type', type);
+            if (req.headers.range) {
+                const range = req.headers.range;
+                const total = stat.size;
+                var [partialstart, partialend] = range.replace(/bytes=/, "").split("-");
+                partialstart = parseInt(partialstart, 10);
+                partialend = partialend ? parseInt(partialend, 10) : total - 1;
+                if (!isNaN(partialstart) && isNaN(partialend)) {
+                    partialstart = partialstart;
+                    partialend = total - 1;
+                }
+                if (isNaN(partialstart) && !isNaN(partialend)) {
+                    partialstart = total - partialstart;
+                    partialend = total - 1;
+                }
+                // Handle unavailable range request
+                if (partialstart >= total || partialend >= total) {
+                    // Return the 416 Range Not Satisfiable.
+                    res.writeHead(416, {
+                        "Content-Range": `bytes */${total}`
+                    });
+                    return res.end();
+                }
+                res.writeHead(206, {
+                    "Content-Range": `bytes ${partialstart}-${partialend}/${total}`,
+                    "Accept-Ranges": "bytes",
+                    "Content-Length": partialend - partialstart + 1,
+                    "Content-Type": "video/mp4"
+                });
+                const buffer = fs.createReadStream(filePath, { start: partialstart, end: partialend }).on("error", (e) => {
+                    return next();
+                });
+                buffer.pipe(res, { end: true });
+                return;
+            } else {
+                res.setHeader('Content-Length', stat.size);
+                res.writeHead(200);
+                const buffer = fs.createReadStream(filePath).on("error", (e) => {
+                    return next();
+                });
+                buffer.pipe(res, { end: true });
+                // res.end(buffer);
+            }
         });
     }
 }
