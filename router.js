@@ -5,11 +5,6 @@ const methods = ["GET", "POST", "DELETE", "PUT", "PATCH"];
 const router = exports = module.exports = function () {
     this._stack = [];
     for (const m of methods) {
-        /**
-* @param {string} path
-* @param {function} route
-* @public
-*/
         this[m.toLowerCase()] = function (path, route) {
             this._add(m, path, route);
         }
