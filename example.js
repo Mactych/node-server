@@ -12,11 +12,10 @@ web_localhost.use("*", (req, res, next) => {
 });
 /* web_localhost.static("/", `${__dirname}/server/routes/uploader/static`); */
 web_localhost.get("/", (req, res) => {
-    console.log(req.protocol);
-    res.send("localhost home");
+    res.html("localhost home");
 });
 web_default.get("*", (req,res) => {
-    res.send("404 not found");
+    res.html("404 not found");
 });
 
 

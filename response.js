@@ -1,13 +1,16 @@
 const Mime = require("./mime.js");
 const http = require("http");
-var res = module.exports = Object.create(http.ServerResponse.prototype);
+const { resolveSoa } = require("dns");
 res.send = function (chunk, type) {
-    if (typeof chunk === 'string') this.setHeader("Content-Type", Mime.types[type ? type : "html"]);
+    if (typeof chunk === 'string') this.setHeader("Content-Type", Mime.types[type ? type : "txt"]);
     this.end(Buffer.from(chunk, 'utf8'), 'utf8');
     return this;
 }
-res.json = function (obj) {
-    this.send(JSON.stringify(obj), "json");
+res.html = function (html) {
+    this.send(html, "html");
+}
+res.json = function (json) {
+    this.send(JSON.stringify(json), "json");
 }
 res.status = function (status) {
     this.writeHead(status);
