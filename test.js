@@ -11,8 +11,11 @@ v1.use("*", (req, res, next) => {
     next();
 });
 v1.use("/test", v2);
-v1.get("/hw1", (req, res) => {
-    res.send("Hello World-1");
+v1.get("/", (req, res) => {
+    res.send("home");
+});
+v1.get("/hw1/:name", (req, res) => {
+    res.send("Hello World-1 " + req.params.name);
 });
 v2.get("/hw2", (req, res) => {
     res.send("Hello World-2");

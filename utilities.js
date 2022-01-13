@@ -1,12 +1,40 @@
 const utils = exports = module.exports = {};
-utils.wildcard = function(rule, target) {
+utils.wildcard = function (rule, target) {
     return (new RegExp('^' + rule.replaceAll(/([.+?^=!:${}()|\[\]\/\\])/g, "\\$1").replaceAll('*', '(.*)') + '$')).test(target);
 };
-utils.params = function(url) {
-    console.log(url);
-    return {};
+utils.params = function (rule, path) {
+    const params = {};
+    const chars = rule.split('');
+    var wildcard = "";
+    var values = [];
+    var tmpValue = "";
+    var reading = false;
+    for (const index in chars) {
+        const char = chars[index];
+        if (reading && char != "/") tmpValue += char;
+        if (char === ":") {
+            reading = true;
+            wildcard += "*";
+        }
+        if (reading && char === "/" || (parseInt(index) + 1) === chars.length) {
+            reading = false;
+            values.push(tmpValue);
+            tmpValue = "";
+        }
+        if (!reading && (parseInt(index) + 1) != chars.length) wildcard += char;
+    }
+    var next = "";
+    const chars2 = path.split("");
+    for (const index in chars2) {
+        const char = chars2[index];
+        if (chars2[index] != chars[index]) next += char;
+    }
+    const chars3 = next.split("/");
+    for (const value in chars3) params[values[value]] = chars3[value];
+    const output = { path: wildcard, params: params };
+    return output;
 }
-utils.query = function(url) {
+utils.query = function (url) {
     var question = url.indexOf("?");
     var hash = url.indexOf("#");
     if (hash == -1 && question == -1) return {};
@@ -33,9 +61,20 @@ utils.query = function(url) {
     });
     return result;
 }
-utils.cookie = function(cookie) {
+utils.cookie = function (cookie) {
     return cookie.split(';').map(v => v.split('=')).reduce((acc, v) => {
         acc[decodeURIComponent(v[0].trim())] = decodeURIComponent(v[1].trim())
         return acc;
     });
+}
+utils.mergeObject = function (src, dest, redefine) {
+    if (!dest) throw new TypeError('argument dest is required')
+    if (!src) throw new TypeError('argument src is required');
+    if (redefine === undefined) redefine = true;
+    Object.getOwnPropertyNames(src).forEach(function forEachOwnPropertyName(name) {
+        if (!redefine && Object.prototype.hasOwnProperty.call(dest, name)) return;
+        var descriptor = Object.getOwnPropertyDescriptor(src, name);
+        Object.defineProperty(dest, name, descriptor);
+    })
+    return dest;
 }

@@ -35,7 +35,9 @@ router.prototype.handle = function (req, res) {
 
     // ROUTING: methods
     for (const r of this._stack) {
-        if (!Utils.wildcard(r.path, req.url)) continue;
+        const parsed = Utils.params(r.path, req.url);
+        if (parsed.params) req.params = parsed.params;
+        if (!Utils.wildcard(parsed.path ? parsed.path : r.path, req.url)) continue;
         if (r.method === "MIDDLE") {
             var next = false;
             r.route(req, res, () => {
