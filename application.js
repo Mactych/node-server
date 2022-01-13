@@ -20,8 +20,9 @@ application.handle = function (req, res) {
 application.virtual = function(domain, router) {
     if (typeof domain === "object") {
         for (const d of domain) {
-            this._virtuals.push(new Virtual(domain, router));
+            this._virtuals.push(new Virtual(d, router));
         }
+        return;
     } else {
         this._virtuals.push(new Virtual(domain, router));
     }

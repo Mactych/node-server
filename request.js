@@ -9,8 +9,15 @@ var req = module.exports = Object.create(http.IncomingMessage.prototype);
  * @public
  */
 Utils.defineGetter(req, 'protocol', function() {
-    var proto = this.connection.encrypted
-        ? 'https'
-        : 'http';
-    return proto;
+    return this.connection.encrypted ? 'https' : 'http';;
+});
+
+/**
+ * Return the host used for the request
+ *
+ * @return {String}
+ * @public
+ */
+ Utils.defineGetter(req, 'host', function() {
+    return this.headers["host"];
 });

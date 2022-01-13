@@ -6,3 +6,4 @@
         - Create: res.html() use to send HTML code this will set the correct content type
         - Create: res.json() use to send JSON
     * Add: Support for passing in an Array into the app.virtual() function allowing for multiple domains to be used
+    * Add: Getter for req.host
