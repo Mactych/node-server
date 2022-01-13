@@ -56,6 +56,7 @@ const router = exports = module.exports = function () {
 /**
 * @param {function} request
 * @param {function} response
+* @returns {bool} resolved
 * @private
 */
 router.prototype.handle = function (req, res) {
@@ -80,7 +81,7 @@ router.prototype.handle = function (req, res) {
             return true;
         }
     }
-    return false; // if not resolved cycle through other virtuals
+    return false;
 };
 /**
 * @param {string} method
