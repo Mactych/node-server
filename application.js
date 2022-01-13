@@ -13,7 +13,7 @@ application.handle = function (req, res) {
     Object.setPrototypeOf(res, Response);
     for (const v of this._virtuals) {
         if (!Utils.wildcard(v._domain, req.headers["host"])) continue;
-        v._router.handle(req, res);
+        if (v._router.handle(req, res)) return;
     }
 }
 application.virtual = function(domain, router) {

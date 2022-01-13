@@ -21,7 +21,7 @@ web_default.get("*", (req,res) => {
 
 // use the virtual network
 app.virtual("*", web_localhost);
-/* app.virtual("*", web_default); */
+app.virtual("*", web_default);
 app.listen(80, (port) => {
     console.log(`listening on port ` + port);
 });
