@@ -2,6 +2,25 @@ const Utils = require("./utilities.js");
 const methods = ["GET", "POST", "DELETE", "PUT", "PATCH"];
 const router = exports = module.exports = function () {
     this._stack = [];
+    for (const m of methods) {
+        this[m.toLowerCase()] = function (path, route) {
+            this._add(m, path, route);
+        }
+    }
+    this.use = function (path, route) {
+        if (route._stack) {
+            for (const r of route._stack) {
+                r.path = path+r.path;
+            }
+            this._stack = this._stack.concat(route._stack);
+            route._path = path;
+            route._stack = this._stack;
+        } else if (typeof route === "function") {
+            this._add("MIDDLE", path, route);
+        } else {
+            throw new TypeError("route.use() not a valid function or route to pass in");
+        }
+    }
 }
 router.prototype.handle = function (req, res) {
     // EXTENDED: Modify url
@@ -60,24 +79,5 @@ router.prototype._delete = function (method, path) {
             this._stack.splice(index, index+1);
             break;
         }
-    }
-}
-router.prototype.use = function (path, route) {
-    if (route._stack) {
-        for (const r of route._stack) {
-            r.path = path+r.path;
-        }
-        this._stack = this._stack.concat(route._stack);
-        route._path = path;
-        route._stack = this._stack;
-    } else if (typeof route === "function") {
-        this._add("MIDDLE", path, route);
-    } else {
-        throw new TypeError("route.use() not a valid function or route to pass in");
-    }
-}
-for (const m of methods) {
-    router.prototype[m.toLowerCase()] = function (path, route) {
-        this._add(m, path, route);
     }
 }
