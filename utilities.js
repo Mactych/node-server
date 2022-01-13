@@ -2,6 +2,13 @@ const utils = exports = module.exports = {};
 utils.wildcard = function (rule, target) {
     return (new RegExp('^' + rule.replaceAll(/([.+?^=!:${}()|\[\]\/\\])/g, "\\$1").replaceAll('*', '(.*)') + '$')).test(target);
 };
+utils.defineGetter = function (obj, name, getter) {
+    Object.defineProperty(obj, name, {
+        configurable: true,
+        enumerable: true,
+        get: getter
+    });
+}
 utils.params = function (rule, path) {
     const params = {};
     const chars = rule.split('');

@@ -1,11 +1,13 @@
 const Mime = require("./mime.js");
 const http = require("http");
 var res = module.exports = Object.create(http.ServerResponse.prototype);
-res.send = function (body) {
-    if (typeof body === 'string') this.setHeader("Content-Type", Mime.types["html"]);
-    this.write(body);
-    this.end();
+res.send = function (chunk, type) {
+    if (typeof chunk === 'string') this.setHeader("Content-Type", Mime.types[type ? type : "html"]);
+    this.end(Buffer.from(chunk, 'utf8'), 'utf8');
     return this;
+}
+res.json = function (obj) {
+    this.send(JSON.stringify(obj), "json");
 }
 res.status = function (status) {
     this.writeHead(status);
