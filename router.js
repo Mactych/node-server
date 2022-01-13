@@ -5,22 +5,22 @@ const methods = ["GET", "POST", "DELETE", "PUT", "PATCH"];
 const router = exports = module.exports = function () {
     this._stack = [];
     for (const m of methods) {
-                /**
- * @param {string} path
- * @param {function} route
- * @public
- */
+        /**
+* @param {string} path
+* @param {function} route
+* @public
+*/
         this[m.toLowerCase()] = function (path, route) {
             this._add(m, path, route);
         }
     }
-        /**
- * @param {function} middleware
- * @public
- */
+    /**
+* @param {function} middleware
+* @public
+*/
     this.use = function () {
         if (typeof arguments[0] === 'string' && arguments[1]._stack) {
-            for (const r of arguments[1]._stack) r.path = path+r.path;
+            for (const r of arguments[1]._stack) r.path = path + r.path;
             this._stack = this._stack.concat(arguments[1]._stack);
             arguments[1]._path = path;
             arguments[1]._stack = this._stack;
@@ -36,7 +36,7 @@ const router = exports = module.exports = function () {
  * @param {string} directory
  * @public
  */
-    this.static = function(path, directory) {
+    this.static = function (path, directory) {
         this._add("MIDDLE", function (req, res, next) {
             if (req.method != "GET") return next();
             var staticFilePath = decodeURIComponent(req.url.substring(path.length) ? req.url.substring(path.length) : "/");
@@ -53,6 +53,11 @@ const router = exports = module.exports = function () {
         });
     }
 }
+/**
+* @param {function} request
+* @param {function} response
+* @private
+*/
 router.prototype.handle = function (req, res) {
     // EXTENDED: Modify url
     if (req.url.substr(1).endsWith("/")) req.url = req.url.slice(0, -1);
@@ -77,31 +82,31 @@ router.prototype.handle = function (req, res) {
     }
     return false; // if not resolved cycle through other virtuals
 };
-    /**
- * @param {string} method
- * @param {string} path
- * @param {function} route
- * @public
- */
+/**
+* @param {string} method
+* @param {string} path
+* @param {function} route
+* @public
+*/
 router.prototype._add = function () {
     const options = { method: arguments[0] };
     if (typeof arguments[1] === "string" && typeof arguments[2] === "function") { // this is a route
-        options["path"] = this._path ? this._path+arguments[1] : arguments[1];
+        options["path"] = this._path ? this._path + arguments[1] : arguments[1];
         options["route"] = arguments[2];;
     } else if (typeof arguments[1] === "function") options["route"] = arguments[1];
     if (typeof arguments[0] === "string") return this._stack.push(options);
     throw new TypeError("router._add() invalid options");
 }
-    /**
- * @param {string} method
- * @param {string} path
- * @public
- */
+/**
+* @param {string} method
+* @param {string} path
+* @public
+*/
 router.prototype._delete = function (method, path) {
     for (const index in this._stack) {
         const route = this._stack[index];
         if (route.method === method.toUpperCase() && route.path === path) {
-            this._stack.splice(index, index+1);
+            this._stack.splice(index, index + 1);
             break;
         }
     }
