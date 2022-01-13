@@ -18,6 +18,14 @@ Utils.defineGetter(req, 'protocol', function() {
  * @return {String}
  * @public
  */
- Utils.defineGetter(req, 'host', function() {
+Utils.defineGetter(req, 'host', function() {
     return this.headers["host"];
+});
+
+Utils.defineGetter(req, 'cookie', function() {
+    return this.headers["cookie"] ? Utils.cookie(this.headers["cookie"]) : {};
+});
+
+Utils.defineGetter(req, 'query', function() {
+    return Utils.query(this.url);
 });

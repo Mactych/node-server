@@ -43,11 +43,7 @@ const router = exports = module.exports = function () {
 router.prototype.handle = function (req, res) {
     // EXTENDED: Modify url
     if (req.url.substr(1).endsWith("/")) req.url = req.url.slice(0, -1);
-
-    // EXTENDED: variables
-    req.query = Utils.query(req.url);
     req.url.slice(0, req.url.lastIndexOf("?"));
-    req.cookie = req.headers["cookie"] ? Utils.cookie(req.headers["cookie"]) : {};
 
     // ROUTING: methods
     for (const r of this._stack) {
