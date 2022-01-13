@@ -1,6 +1,6 @@
 const Mime = require("./mime.js");
 const http = require("http");
-const { resolveSoa } = require("dns");
+var res = module.exports = Object.create(http.ServerResponse.prototype);
 res.send = function (chunk, type) {
     if (typeof chunk === 'string') this.setHeader("Content-Type", Mime.types[type ? type : "txt"]);
     this.end(Buffer.from(chunk, 'utf8'), 'utf8');
