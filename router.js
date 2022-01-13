@@ -1,7 +1,7 @@
 const Utils = require("./utilities.js");
 const Mime = require("./mime.js");
 const fs = require("fs");
-const methods = ["GET", "POST", "DELETE", "PUT", "PATCH"];
+const methods = ["GET", "POST", "DELETE", "PUT", "PATCH", "HEAD"];
 const router = exports = module.exports = function () {
     this._stack = [];
     for (const m of methods) {
@@ -33,18 +33,25 @@ const router = exports = module.exports = function () {
  */
     this.static = function (path, directory) {
         this._add("MIDDLE", function (req, res, next) {
-            if (req.method != "GET") return next();
-            var staticFilePath = decodeURIComponent(req.url.substring(path.length) ? req.url.substring(path.length) : "/");
-            if (staticFilePath.endsWith("/")) staticFilePath += "index.html";
-            if (!staticFilePath.startsWith("/")) staticFilePath = `/${staticFilePath}`;
-            if (!fs.existsSync(`${directory}${staticFilePath}`)) return next();
-            const staticFile = fs.createReadStream(`${directory}${staticFilePath}`).on("error", (e) => console.error("Static-" + e));
-            const stat = fs.statSync(`${directory}${staticFilePath}`);
+            if (req.method != "GET" || !req.url.startsWith(path)) return next();
+            var filePath = directory+(directory.endsWith("/") ? "" : "/")+decodeURIComponent(req.url.substring(path.length) ? req.url.substring(path.length) : "/");
+            // MANIPULATE: changes the path if needed
+            if (!filePath.startsWith("/")) filePath = "/"+filePath;
+            if (filePath.endsWith("/")) filePath += "index.html";
+            // CHECK: if should server content
+            if (!fs.existsSync(filePath)) return next();
+            const stat = fs.statSync(filePath);
+            if (!filePath.endsWith("/") && fs.statSync(filePath).isDirectory()) {
+                if (!fs.existsSync(`${filePath}/index.html`)) return next();
+                return res.redirect(filePath+"/");
+            }
+            // SEND: the file to the client
+            const file = fs.createReadStream(filePath).on("error", (e) => console.error("Static-" + e));
             const headers = { "Content-Length": stat.size };
-            const mType = Mime.lookup(staticFilePath, true);
-            if (mType) headers["Content-Type"] = mType;
+            const type = Mime.lookup(filePath, true);
+            if (type) headers["Content-Type"] = type;
             res.writeHead(200, headers);
-            staticFile.pipe(res, { end: true });
+            file.pipe(res, { end: true });
         });
     }
 }
@@ -55,7 +62,7 @@ const router = exports = module.exports = function () {
 * @private
 */
 router.prototype.handle = function (req, res) {
-    // EXTENDED: Modify url
+    // EXTENDED: Remove params from url
     req.url = req.url.lastIndexOf("?") != -1 ? req.url.slice(0, req.url.lastIndexOf("?")) : req.url;
     // ROUTING: methods
     for (const r of this._stack) {
@@ -69,7 +76,7 @@ router.prototype.handle = function (req, res) {
             parsed = Utils.params(r.path, req.url);
             if (parsed.params) req.params = parsed.params;
         }
-        if (!Utils.wildcard((parsed.path ? parsed.path : r.path), r.path.endsWith("/") ? req.path : (req.url.substr(1).endsWith("/") ? req.url.slice(0, -1) : req.url)) ) continue;
+        if (!Utils.wildcard((parsed.path ? parsed.path : r.path), (r.path.endsWith("/") ? req.url : (req.url.substr(1).endsWith("/") ? req.url.slice(0, -1) : req.url)))) continue;
         if (r.method === req.method) {
             r.route(req, res);
             return true;
