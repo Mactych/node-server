@@ -16,7 +16,7 @@ web_mw.use((req, res, next) => {
     // res.setHeaders({ "x-test": "true" });
     next();
 });
-web_mw.static("/", `${__dirname}/server/routes/uploader/static`, { requireHTMLExtension: true });
+web_mw.static("/", `${__dirname}/server/routes/uploader/static`, { requireHTMLExtension: false });
 web_mw.get("*", (req, res) => {
     res.html("hi");
 });

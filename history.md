@@ -17,4 +17,4 @@
     * Fix: route would not be used if it ended with '/' because it was always removed, this issue is fixed
     * Add: support for byte ranges on static content
     * Fix: issue where when middlewares were appended to another route it would get a path when not needed
-    * Add: support for not requiring to use .html when serving static files - default is false can be set using static options.requireHTMLExtension
+    * Add: support for not requiring to use .html when serving static files - default is true can be set using static options.requireHTMLExtension

@@ -89,7 +89,7 @@ const router = exports = module.exports = function () {
     this.static = function (path, directory, options) {
         options = options ? options : {};
         const opts = {};
-        opts.requireHTMLExtension = options.requireHTMLExtension ? options.requireHTMLExtension : false;
+        opts.requireHTMLExtension = options.requireHTMLExtension ? options.requireHTMLExtension : true;
         this.use(function (req, res, next) {
             if (req.method != "GET" || !req.url.startsWith(path)) return next();
             var urlPath = decodeURIComponent(req.url.substring(path.length) ? req.url.substring(path.length) : "/");
@@ -99,7 +99,7 @@ const router = exports = module.exports = function () {
             if (filePath.endsWith("/")) filePath += "index.html";
             // CHECK: if should server content
             if (!fs.existsSync(filePath)) {
-                if (opts.requireHTMLExtension && fs.existsSync(filePath+".html")) {
+                if (!opts.requireHTMLExtension && fs.existsSync(filePath+".html")) {
                     filePath += ".html";
                 } else {
                     return next();
