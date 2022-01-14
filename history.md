@@ -15,6 +15,6 @@
     * Fix: query not being remove from urls
     * Change: make middleware functions not use a path
     * Fix: route would not be used if it ended with '/' because it was always removed, this issue is fixed
-    * Add: support for byte ranges on static content
+    * Add: support for byte ranges with static content
     * Fix: issue where when middlewares were appended to another route it would get a path when not needed
     * Add: support for not requiring to use .html when serving static files - default is true can be set using static options.requireHTMLExtension
