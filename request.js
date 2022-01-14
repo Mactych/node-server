@@ -31,7 +31,7 @@ Utils.defineGetter(req, 'host', function() {
  * @return {Object}
  * @public
  */
-Utils.defineGetter(req, 'cookie', function() {
+Utils.defineGetter(req, 'cookies', function() {
     return this.headers["cookie"] ? Utils.cookie(this.headers["cookie"]) : {};
 });
 
