@@ -10,14 +10,17 @@ web_localhost.use((req, res, next) => {
     });
     next();
 });
-/* web_localhost.static(`${__dirname}/server/routes/uploader/static`); */
-/* web_default.get("/apple", (req, res) => {
-    res.html("this is apple");
-}); */
-web_default.get("/", (req, res) => {
+const web_mw = new server.Router();
+web_mw.use((req, res, next) => {
+    // console.log(`middleware: ${req.url}`);
+    // res.setHeaders({ "x-test": "true" });
+    next();
+});
+web_mw.static("/", `${__dirname}/server/routes/uploader/static`, { requireHTMLExtension: true });
+web_mw.get("*", (req, res) => {
     res.html("hi");
 });
-
+web_localhost.use(web_mw);
 
 // use the virtual network
 app.virtual("*", web_localhost);

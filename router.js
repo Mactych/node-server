@@ -1,39 +1,96 @@
 const Utils = require("./utilities.js");
 const Mime = require("./mime.js");
 const fs = require("fs");
-const { createRequire } = require("module");
 const methods = ["GET", "POST", "DELETE", "PUT", "PATCH", "HEAD"];
 const router = exports = module.exports = function () {
     this._stack = [];
     for (const m of methods) {
-        this[m.toLowerCase()] = function (path, route) {
-            this._add(m, path, route);
+        this[m.toLowerCase()] = function () {
+            // path: arguments[0]
+            // route: arguments[1]
+            if (typeof arguments[0] != 'string') throw TypeError("route.add() invalid path");
+            if (typeof arguments[1] != 'function') throw TypeError("route.add() invalid route");
+            this._add(m, arguments[0], arguments[1]);
         }
     }
     /**
-* @param {function} middleware
-* @public
-*/
+    * @param {string} method
+    * @param {string} path
+    * @param {function} route
+    * @public~
+    */
+    router.prototype._add = function () {
+        // method: arguments[0]
+        // path: arguments[1]
+        // route: arguments[2]
+        const options = { method: arguments[0] };
+        if (typeof arguments[1] === "string" && typeof arguments[2] === "function") {
+            // is a route
+            options["path"] = this._path ? this._path + arguments[1] : arguments[1];
+            options["route"] = arguments[2];
+        } else if (typeof arguments[1] === "function") {
+            // is a middlware
+            options["route"] = arguments[1];
+        }
+        if (typeof arguments[0] === "string") {
+            return this._stack.push(options);
+        }
+        throw new TypeError("router._add() invalid options");
+    }
+    /**
+    * @param {string} method
+    * @param {string} path
+    * @public
+    */
+    router.prototype._delete = function (method, path) {
+        method = method.toUpperCase();
+        if (method === "MIDDLEWARE") throw TypeError("router._delete() cannot delete middlware");
+        for (const index in this._stack) {
+            const route = this._stack[index];
+            if (route.method === method.toUpperCase() && route.path === path) {
+                this._stack.splice(index, index + 1);
+                break;
+            }
+        }
+    }
+    /**
+    * @param {function} middleware
+    * @public
+    */
     this.use = function () {
-        if (typeof arguments[0] === 'string' && arguments[1]._stack) {
-            for (const r of arguments[1]._stack) r.path = path + r.path;
+        // path || route: arguments[0];
+        // route: arguments[0];
+        if (typeof arguments[0] === "object" && (arguments[0] && arguments[0]._stack)) {
+            // route without path
+            this._stack = this._stack.concat(arguments[0]._stack);
+            arguments[0]._stack = this._stack;
+            return;
+        }
+        if (typeof arguments[0] === "string" && typeof arguments[1] === "object" && (arguments[1] && arguments[1]._stack)) {
+            // route with path
+            for (const r of arguments[1]._stack) if (r.method != "MIDDLEWARE") r.path = arguments[0] + r.path;
             this._stack = this._stack.concat(arguments[1]._stack);
-            arguments[1]._path = path;
+            arguments[1]._path = arguments[0];
             arguments[1]._stack = this._stack;
             return;
-        } else if (typeof arguments[0] === 'function') {
-            this._add("MIDDLE", arguments[0]);
+        }
+        if (typeof arguments[0] === 'function' && !arguments[0]._stack) {
+            // middleware
+            this._add("MIDDLEWARE", arguments[0]);
             return;
         }
         throw new TypeError("route.use() not a valid function or route to pass in");
     }
     /**
- * @param {string} path
- * @param {string} directory
- * @public
- */
-    this.static = function (path, directory) {
-        this._add("MIDDLE", function (req, res, next) {
+    * @param {string} path
+    * @param {string} directory
+    * @public
+    */
+    this.static = function (path, directory, options) {
+        options = options ? options : {};
+        const opts = {};
+        opts.requireHTMLExtension = options.requireHTMLExtension ? options.requireHTMLExtension : false;
+        this.use(function (req, res, next) {
             if (req.method != "GET" || !req.url.startsWith(path)) return next();
             var urlPath = decodeURIComponent(req.url.substring(path.length) ? req.url.substring(path.length) : "/");
             var filePath = directory + (directory.endsWith("/") ? "" : "/") + urlPath;
@@ -41,7 +98,13 @@ const router = exports = module.exports = function () {
             if (!filePath.startsWith("/")) filePath = "/" + filePath;
             if (filePath.endsWith("/")) filePath += "index.html";
             // CHECK: if should server content
-            if (!fs.existsSync(filePath)) return next();
+            if (!fs.existsSync(filePath)) {
+                if (opts.requireHTMLExtension && fs.existsSync(filePath+".html")) {
+                    filePath += ".html";
+                } else {
+                    return next();
+                }
+            }
             const stat = fs.statSync(filePath);
             if (!filePath.endsWith("/") && fs.statSync(filePath).isDirectory()) {
                 if (!fs.existsSync(`${filePath}/index.html`)) return next();
@@ -107,10 +170,14 @@ router.prototype.handle = function (req, res) {
     // ROUTING: methods
     for (const r of this._stack) {
         var parsed = {};
-        if (r.method === "MIDDLE") {
+        if (r.method === "MIDDLEWARE") {
             var next = false;
             r.route(req, res, () => next = true);
-            if (next) continue; else if (!next) return true;
+            if (next) {
+                continue;
+            } else if (!next) {
+                return true;
+            }
         }
         if (r.path.includes(":")) {
             parsed = Utils.params(r.path, req.url);
@@ -124,34 +191,3 @@ router.prototype.handle = function (req, res) {
     }
     return false;
 };
-/**
-* @param {string} method
-* @param {string} path
-* @param {function} route
-* @public
-*/
-router.prototype._add = function () {
-    const options = { method: arguments[0] };
-    if (typeof arguments[1] === "string" && typeof arguments[2] === "function") {
-        options["path"] = this._path ? this._path + arguments[1] : arguments[1];
-        options["route"] = arguments[2];;
-    } else if (typeof arguments[1] === "function") options["route"] = arguments[1];
-    if (typeof arguments[0] === "string") return this._stack.push(options);
-    throw new TypeError("router._add() invalid options");
-}
-/**
-* @param {string} method
-* @param {string} path
-* @public
-*/
-router.prototype._delete = function (method, path) {
-    method = method.toUpperCase();
-    if (method === "MIDDLE") throw TypeError("router._delete() cannot delete middlware");
-    for (const index in this._stack) {
-        const route = this._stack[index];
-        if (route.method === method.toUpperCase() && route.path === path) {
-            this._stack.splice(index, index + 1);
-            break;
-        }
-    }
-}
