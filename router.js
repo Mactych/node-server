@@ -89,7 +89,7 @@ const router = exports = module.exports = function () {
     this.static = function (path, directory, options) {
         options = options ? options : {};
         const opts = {};
-        opts.requireHTMLExtension = options.requireHTMLExtension ? options.requireHTMLExtension : true;
+        opts.requireHTMLExtension = options.requireHTMLExtension != undefined ? options.requireHTMLExtension : true;
         this.use(function (req, res, next) {
             if (req.method != "GET" || !req.url.startsWith(path)) return next();
             var urlPath = decodeURIComponent(req.url.substring(path.length) ? req.url.substring(path.length) : "/");
