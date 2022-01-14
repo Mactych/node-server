@@ -18,3 +18,4 @@
     * Add: support for byte ranges with static content
     * Fix: issue where when middlewares were appended to another route it would get a path when not needed
     * Add: support for not requiring to use .html when serving static files - default is true can be set using static options.requireHTMLExtension
+    * Rename: the req.cookie getter to req.cookies, this is more logical
