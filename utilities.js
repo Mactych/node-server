@@ -53,31 +53,14 @@ utils.params = function (rule, path) {
 }
 utils.query = function (url) {
     if (!url) throw new TypeError('utils.query() argument url is required')
-    var question = url.indexOf("?");
-    var hash = url.indexOf("#");
-    if (hash == -1 && question == -1) return {};
-    if (hash == -1) hash = url.length;
-    var query = question == -1 || hash == question + 1 ? url.substring(hash) :
-        url.substring(question + 1, hash);
-    var result = {};
-    query.split("&").forEach(function (part) {
-        if (!part) return;
-        part = part.split("+").join(" ");
-        var eq = part.indexOf("=");
-        var key = eq > -1 ? part.substr(0, eq) : part;
-        var val = eq > -1 ? decodeURIComponent(part.substr(eq + 1)) : "";
-        var from = key.indexOf("[");
-        if (from == -1) result[decodeURIComponent(key)] = val;
-        else {
-            var to = key.indexOf("]", from);
-            var index = decodeURIComponent(key.substring(from + 1, to));
-            key = decodeURIComponent(key.substring(0, from));
-            if (!result[key]) result[key] = [];
-            if (!index) result[key].push(val);
-            else result[key][index] = val;
-        }
-    });
-    return result;
+    url = url.lastIndexOf("?") != -1 ? url.slice(url.lastIndexOf("?")+1, url.length) : url;
+    const queries = {};
+    var vars = url.split('&');
+    for (var i = 0; i < vars.length; i++) {
+        var pair = vars[i].split('=');
+        queries[decodeURIComponent(pair[0])] = pair[1] ? decodeURIComponent(pair[1]) : undefined;
+    }
+    return queries;
 }
 utils.cookie = function (cookie) {
     if (!cookie) throw new TypeError('utils.cookie() argument cookie is required')

@@ -44,13 +44,3 @@ Utils.defineGetter(req, 'host', function() {
 Utils.defineGetter(req, 'cookies', function() {
     return this.headers["cookie"] ? Utils.cookie(this.headers["cookie"]) : {};
 });
-
-/**
- * Return the query options
- *
- * @return {Object}
- * @public
- */
-Utils.defineGetter(req, 'query', function() {
-    return Utils.query(this.url);
-});
