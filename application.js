@@ -5,7 +5,7 @@ const Request = require("./request.js");
 const http = require("http");
 var application = exports = module.exports = {};
 
-application.version = "1.0.1";
+application.version = "1.0.2";
 application.init = function() {
     this._virtuals = [];
 }
