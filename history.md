@@ -2,6 +2,7 @@
 ===================
 
     * Update: the params function to make params faster, and more reliable
+    * Update: error handling when arguments aren't specified within the utils
 
 1.0.0 / 2022-01-13
 ===================

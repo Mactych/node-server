@@ -16,6 +16,7 @@ application.handle = function (req, res) {
         if (!Utils.wildcard(v._domain, req.host)) continue;
         if (v._router.handle(req, res)) return;
     }
+    return;
 }
 application.virtual = function(domain, router) {
     if (typeof domain === "object") {
@@ -26,6 +27,7 @@ application.virtual = function(domain, router) {
     } else {
         this._virtuals.push(new Virtual(domain, router));
     }
+    return;
 };
 application.listen = function(port, callback) {
     http.createServer(this).listen(port);

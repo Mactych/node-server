@@ -10,6 +10,8 @@ utils.defineGetter = function (obj, name, getter) {
     });
 }
 utils.params = function (rule, path) {
+    if (!rule) throw new TypeError('utils.params() argument rule is required')
+    if (!path) throw new TypeError('utils.params() argument path is required')
     const keys = [];
     var addKey = false;
     var compare = true;
@@ -50,6 +52,7 @@ utils.params = function (rule, path) {
     return {path:wildcard,params:params};
 }
 utils.query = function (url) {
+    if (!url) throw new TypeError('utils.query() argument url is required')
     var question = url.indexOf("?");
     var hash = url.indexOf("#");
     if (hash == -1 && question == -1) return {};
@@ -77,14 +80,15 @@ utils.query = function (url) {
     return result;
 }
 utils.cookie = function (cookie) {
+    if (!cookie) throw new TypeError('utils.cookie() argument cookie is required')
     return cookie.split(';').map(v => v.split('=')).reduce((acc, v) => {
         acc[decodeURIComponent(v[0].trim())] = decodeURIComponent(v[1].trim())
         return acc;
     });
 }
 utils.mergeObject = function (src, dest, redefine) {
-    if (!dest) throw new TypeError('argument dest is required')
-    if (!src) throw new TypeError('argument src is required');
+    if (!dest) throw new TypeError('utils.mergeObject() argument dest is required')
+    if (!src) throw new TypeError('utils.mergeObject() argument src is required');
     if (redefine === undefined) redefine = true;
     Object.getOwnPropertyNames(src).forEach(function forEachOwnPropertyName(name) {
         if (!redefine && Object.prototype.hasOwnProperty.call(dest, name)) return;
