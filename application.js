@@ -1,4 +1,3 @@
-const Virtual = require("./virtual.js");
 const Utils = require("./utilities.js");
 const Response = require("./response.js");
 const Request = require("./request.js");
@@ -21,11 +20,11 @@ application.handle = function (req, res) {
 application.virtual = function(domain, router) {
     if (typeof domain === "object") {
         for (const d of domain) {
-            this._virtuals.push(new Virtual(d, router));
+            this._virtuals.push({ _domain: domain, _router: router });
         }
         return;
     } else {
-        this._virtuals.push(new Virtual(domain, router));
+        this._virtuals.push({ _domain: domain, _router: router });
     }
     return;
 };
