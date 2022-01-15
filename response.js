@@ -16,6 +16,11 @@ res.json = function (json) {
     if (!json) throw new TypeError('res.json() argument json is required')
     this.send(JSON.stringify(json), "json");
 }
+res.sendStatus = function (status) {
+    res.status(status);
+    res.end();
+    return this;
+}
 res.status = function (status) {
     if (!status) throw new TypeError('res.status() argument status is required')
     this.statusCode = status;
