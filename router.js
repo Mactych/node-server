@@ -139,7 +139,6 @@ const router = exports = module.exports = function () {
                     "Content-Range": `bytes ${partialstart}-${partialend}/${total}`,
                     "Accept-Ranges": "bytes",
                     "Content-Length": partialend - partialstart + 1,
-                    "Content-Type": "video/mp4"
                 });
                 const buffer = fs.createReadStream(filePath, { start: partialstart, end: partialend }).on("error", (e) => {
                     return next();
