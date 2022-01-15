@@ -16,19 +16,22 @@ utils.params = function (rule, path) {
     var addKey = false;
     var compare = true;
     var wildcard = "";
+    var removed = "";
     const params = {};
-    const keyChars = rule.split("");
+    var keyChars = rule.split("");
     var valueChars = path.split("");
     if (rule.startsWith("/") && path.startsWith("/")) {
-        keyChars.shift();
-        valueChars.shift();
+        console.log("yes starts with /");
+        removed += "/";
+        keyChars = keyChars.splice(1, keyChars.length);
+        valueChars = valueChars.splice(1, valueChars.length);
     }
     for (var index in keyChars) {
         index = parseInt(index);
         const c = keyChars[index];
         const v = valueChars[index];
-         if (compare && v === c) {
-            valueChars.shift();
+         if (compare && c === v) {
+            removed += c;
             continue;
         } else compare = false;
         if (c === ":") {
@@ -40,6 +43,7 @@ utils.params = function (rule, path) {
         if (c === "/" || index === keyChars.length - 1) addKey = false;
     }
     valueChars = valueChars.join("");
+    valueChars = valueChars.slice(removed.length-1, valueChars.length);
     valueChars = valueChars.split("/");
     wildcard = rule;
     for (var index in keys) {
