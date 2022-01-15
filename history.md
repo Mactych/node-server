@@ -4,6 +4,7 @@
     * Update: the params function to make params faster, and more reliable
     * Update: error handling when arguments aren't specified within the utils
     * Fix: static video in byte range would always stay Content-Type=video/mp4
+    * Update: response functions throw error if insufficent arguments
 
 1.0.0 / 2022-01-13
 ===================
