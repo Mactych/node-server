@@ -2,7 +2,7 @@
 This was built to be as performant and straightforward as possible whilst keeping your applications happy since this framework extends the built-in HTTP server.
 
 ## Todo List
-* Improve code to be as efficent as it possibly can be
+- [ ] Improve code to be as efficent as it possibly can be
 
 ## How to use
 Firstly declear the server class, example below.
