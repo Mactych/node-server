@@ -1,7 +1,7 @@
 const Utils = require("./utilities.js");
 const Mime = require("./mime.js");
 const fs = require("fs");
-const methods = ["GET", "POST", "DELETE", "PUT", "PATCH", "HEAD"];
+const methods = ["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD"];
 const router = exports = module.exports = function () {
     this._stack = [];
     for (const m of methods) {
@@ -91,7 +91,7 @@ const router = exports = module.exports = function () {
         const opts = {};
         opts.requireHTMLExtension = options.requireHTMLExtension != undefined ? options.requireHTMLExtension : true;
         this.use(function (req, res, next) {
-            if (req.method != "GET" || !req.url.startsWith(path)) return next();
+            if (!["GET", "HEAD"].includes(req.method) || !req.url.startsWith(path)) return next();
             var urlPath = decodeURIComponent(req.url.substring(path.length) ? req.url.substring(path.length) : "/");
             var filePath = directory + (directory.endsWith("/") ? "" : "/") + urlPath;
             // MANIPULATE: changes the path if needed
@@ -143,6 +143,10 @@ const router = exports = module.exports = function () {
                 const buffer = fs.createReadStream(filePath, { start: partialstart, end: partialend }).on("error", (e) => {
                     return next();
                 });
+                if (req.method === "HEAD") {
+                    res.end();
+                    return;
+                };
                 buffer.pipe(res, { end: true });
                 return;
             } else {
@@ -151,6 +155,10 @@ const router = exports = module.exports = function () {
                 const buffer = fs.createReadStream(filePath).on("error", (e) => {
                     return next();
                 });
+                if (req.method === "HEAD") {
+                    res.end();
+                    return;
+                };
                 buffer.pipe(res, { end: true });
                 // res.end(buffer);
             }

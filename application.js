@@ -13,6 +13,7 @@ application.handleRoute = function (req, res) {
         if (!Utils.wildcard(v._domain, req.host)) continue;
         if (v._router.handle(req, res)) return;
     }
+    if (req.method === "OPTIONS") res.end();
     return;
 }
 application.virtual = function(domain, router) {

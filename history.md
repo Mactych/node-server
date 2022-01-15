@@ -1,3 +1,9 @@
+1.0.6 / 2022-01-16
+===================
+
+    * Add: support for OPTIONS method, automatically resolves after all routes have completed
+    * Add: support for method HEAD can be initated using the router.head(url, route) function
+
 1.0.5 / 2022-01-15
 ===================
 
