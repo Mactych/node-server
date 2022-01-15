@@ -29,7 +29,7 @@ utils.params = function (rule, path) {
         index = parseInt(index);
         const c = keyChars[index];
         const v = valueChars[index];
-         if (compare && c === v) {
+        if (compare && c === v) {
             removed += c;
             continue;
         } else compare = false;
@@ -42,7 +42,7 @@ utils.params = function (rule, path) {
         if (c === "/" || index === keyChars.length - 1) addKey = false;
     }
     valueChars = valueChars.join("");
-    valueChars = valueChars.slice(removed.length-1, valueChars.length);
+    valueChars = valueChars.slice(removed.length - 1, valueChars.length);
     valueChars = valueChars.split("/");
     wildcard = rule;
     for (var index in keys) {
@@ -52,11 +52,11 @@ utils.params = function (rule, path) {
         wildcard = wildcard.replaceAll(`:${key}`, "*");
         if (key && value) params[key] = value;
     }
-    return {path:wildcard,params:params};
+    return { path: wildcard, params: params };
 }
 utils.query = function (url) {
     if (!url) throw new TypeError('utils.query() argument url is required')
-    url = url.lastIndexOf("?") != -1 ? url.slice(url.lastIndexOf("?")+1, url.length) : url;
+    url = url.lastIndexOf("?") != -1 ? url.slice(url.lastIndexOf("?") + 1, url.length) : url;
     const queries = {};
     var vars = url.split('&');
     for (var i = 0; i < vars.length; i++) {

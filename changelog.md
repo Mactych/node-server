@@ -1,3 +1,9 @@
+1.0.7 / 2022-01-16
+===================
+
+    * Update: format all javascript files
+    * Fix: issue where query would be redone every time a route was run
+
 1.0.6 / 2022-01-16
 ===================
 

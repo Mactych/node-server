@@ -99,7 +99,7 @@ const router = exports = module.exports = function () {
             if (filePath.endsWith("/")) filePath += "index.html";
             // CHECK: if should server content
             if (!fs.existsSync(filePath)) {
-                if (!opts.requireHTMLExtension && fs.existsSync(filePath+".html")) {
+                if (!opts.requireHTMLExtension && fs.existsSync(filePath + ".html")) {
                     filePath += ".html";
                 } else {
                     return next();
@@ -172,9 +172,6 @@ const router = exports = module.exports = function () {
 * @private
 */
 router.prototype.handle = function (req, res) {
-    // EXTENDED: Set and remove query from url
-    req.query = Utils.query(req.url);
-    req.url = req.url.lastIndexOf("?") != -1 ? req.url.slice(0, req.url.lastIndexOf("?")) : req.url;
     // ROUTING: methods
     for (const r of this._stack) {
         var parsed = {};
