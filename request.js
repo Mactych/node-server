@@ -26,6 +26,16 @@ Utils.defineGetter(req, 'host', function() {
 });
 
 /**
+ * Return the path used for the request
+ *
+ * @return {String}
+ * @public
+ */
+ Utils.defineGetter(req, 'path', function() {
+    return this.url;
+});
+
+/**
  * Return the cookies sent with a request
  *
  * @return {Object}
