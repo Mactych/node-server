@@ -17,8 +17,8 @@ res.json = function (json) {
     this.send(JSON.stringify(json), "json");
 }
 res.sendStatus = function (status) {
-    res.status(status);
-    res.end();
+    this.writeHead(status);
+    this.end();
     return this;
 }
 res.status = function (status) {
