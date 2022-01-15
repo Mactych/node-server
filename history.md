@@ -6,6 +6,7 @@
     * Fix: static video in byte range would always stay Content-Type=video/mp4
     * Update: response functions throw error if insufficent arguments
     * Add: response function res.sendStatus(statusCode)
+    * Add: getter req.path
 
 1.0.0 / 2022-01-13
 ===================
