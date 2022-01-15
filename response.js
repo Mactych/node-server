@@ -3,7 +3,6 @@ const http = require("http");
 var res = module.exports = Object.create(http.ServerResponse.prototype);
 res.send = function (chunk, type) {
     if (!chunk) throw new TypeError('res.send() argument chunk is required')
-    if (!type) throw new TypeError('res.send() argument type is required')
     if (typeof chunk === 'string') this.setHeader("Content-Type", Mime.types[type ? type : "txt"]);
     this.end(Buffer.from(chunk, 'utf8'), 'utf8');
     return this;
