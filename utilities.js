@@ -21,7 +21,6 @@ utils.params = function (rule, path) {
     var keyChars = rule.split("");
     var valueChars = path.split("");
     if (rule.startsWith("/") && path.startsWith("/")) {
-        console.log("yes starts with /");
         removed += "/";
         keyChars = keyChars.splice(1, keyChars.length);
         valueChars = valueChars.splice(1, valueChars.length);
