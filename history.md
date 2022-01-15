@@ -1,3 +1,8 @@
+1.0.1 / 2022-01-15
+===================
+
+    * Update: the params function to make params faster, and more reliable
+
 1.0.0 / 2022-01-13
 ===================
 

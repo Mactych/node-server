@@ -10,36 +10,44 @@ utils.defineGetter = function (obj, name, getter) {
     });
 }
 utils.params = function (rule, path) {
-    const params = {};
-    const chars = rule.split('');
+    const keys = [];
+    var addKey = false;
+    var compare = true;
     var wildcard = "";
-    var values = [];
-    var tmpValue = "";
-    var reading = false;
-    for (const index in chars) {
-        const char = chars[index];
-        if (reading && char != "/") tmpValue += char;
-        if (char === ":") {
-            reading = true;
-            wildcard += "*";
-        }
-        if (reading && char === "/" || (parseInt(index) + 1) === chars.length) {
-            reading = false;
-            values.push(tmpValue);
-            tmpValue = "";
-        }
-        if (!reading && (parseInt(index) + 1) != chars.length) wildcard += char;
+    const params = {};
+    const keyChars = rule.split("");
+    var valueChars = path.split("");
+    if (rule.startsWith("/") && path.startsWith("/")) {
+        keyChars.shift();
+        valueChars.shift();
     }
-    var next = "";
-    const chars2 = path.split("");
-    for (const index in chars2) {
-        const char = chars2[index];
-        if (chars2[index] != chars[index]) next += char;
+    for (var index in keyChars) {
+        index = parseInt(index);
+        const c = keyChars[index];
+        const v = valueChars[index];
+         if (compare && v === c) {
+            valueChars.shift();
+            continue;
+        } else compare = false;
+        if (c === ":") {
+            addKey = true;
+            keys.push("");
+            continue;
+        }
+        if (c != "/" && addKey) keys[keys.length - 1] += c;
+        if (c === "/" || index === keyChars.length - 1) addKey = false;
     }
-    const chars3 = next.split("/");
-    for (const value in chars3) params[values[value]] = chars3[value];
-    const output = { path: wildcard, params: params };
-    return output;
+    valueChars = valueChars.join("");
+    valueChars = valueChars.split("/");
+    wildcard = rule;
+    for (var index in keys) {
+        index = parseInt(index);
+        const key = keys[index];
+        const value = valueChars[index];
+        wildcard = wildcard.replaceAll(`:${key}`, "*");
+        if (key && value) params[key] = value;
+    }
+    return {wildcard:wildcard,params:params};
 }
 utils.query = function (url) {
     var question = url.indexOf("?");
