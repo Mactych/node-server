@@ -47,7 +47,7 @@ utils.params = function (rule, path) {
         wildcard = wildcard.replaceAll(`:${key}`, "*");
         if (key && value) params[key] = value;
     }
-    return {wildcard:wildcard,params:params};
+    return {path:wildcard,params:params};
 }
 utils.query = function (url) {
     var question = url.indexOf("?");
