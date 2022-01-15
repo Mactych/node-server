@@ -8,7 +8,7 @@ application.version = "1.0.2";
 application.init = function() {
     this._virtuals = [];
 }
-application.handle = function (req, res) {
+application.handleRoute = function (req, res) {
     Object.setPrototypeOf(req, Request);
     Object.setPrototypeOf(res, Response);
     for (const v of this._virtuals) {

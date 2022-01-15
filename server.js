@@ -7,7 +7,7 @@ exports = module.exports = createApplication;
 
 function createApplication() {
     const app = function (req, res) {
-      app.handle(req, res);
+      app.handleRoute(req, res);
     }
     Utils.mergeObject(Application, app, false);
     app.init();
