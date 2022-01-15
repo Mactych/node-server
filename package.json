@@ -1,0 +1,25 @@
+{
+  "name": "macserver",
+  "version": "1.0.1",
+  "description": "A simple preformant web server built to last and upgrade.",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mactych/node-server.git"
+  },
+  "keywords": [
+    "webserver",
+    "simple",
+    "fast",
+    "server"
+  ],
+  "author": "tripathy",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Mactych/node-server/issues"
+  },
+  "homepage": "https://github.com/Mactych/node-server#readme"
+}
