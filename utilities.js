@@ -62,7 +62,7 @@ utils.query = function (url) {
     var vars = url.split('&');
     for (var i = 0; i < vars.length; i++) {
         var pair = vars[i].split('=');
-        queries[decodeURIComponent(pair[0])] = pair[1] ? decodeURIComponent(pair[1]) : '';
+        queries[pair[0]] = pair[1] ? pair[1] : '';
     }
     return queries;
 }
