@@ -2,7 +2,7 @@
 This was built to be as performant and straightforward as possible whilst keeping your applications happy since this framework extends the built-in HTTP server.
 
 ## How to use
-Firstly declear the server class, example below.
+Firstly declare the server class, example below.
 ```javascript
 const webserver = new (require("./server.js"))();
 ```
@@ -12,7 +12,7 @@ const api = new webserver.Route();
 const route = new webserver.Route();
 // add route -> all request in the api route will point .../api
 route.use("/api" api);
-// setup middlewhare
+// setup middleware
 route.use("/", (req, res, next) => {
     console.log(`middlewhare: ${req.url}`);
     next();
