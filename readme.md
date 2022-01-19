@@ -12,7 +12,7 @@ const api = new webserver.Route();
 const route = new webserver.Route();
 // add route -> all request in the api route will point .../api
 route.use("/api" api);
-// setup middleware
+// setup the middleware
 route.use("/", (req, res, next) => {
     console.log(`middlewhare: ${req.url}`);
     next();
