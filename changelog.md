@@ -16,6 +16,9 @@
     * Update: better management for options
     * Update: now using single quotes '' to be more consistent.
     * Update: added missing error throwing in response
+    * Remove: not needed getter definitions in request
+    * Fix: path getter redefining over req.path
+    * Add: a new CORS handler which can be called using server.cors(res, options)
 
 1.0.7 / 2022-01-16
 ===================

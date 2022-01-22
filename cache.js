@@ -15,15 +15,15 @@ exports = module.exports = function(res, options = {}) {
 	};
 	utils.copyProperties(options, opts, ['validate', 'transform', 'private', 'duration']);
 	res.cache = opts;
-	var cache_control = '';
-	if (opts['duration']) cache_control += `max-age=${opts['duration']},`;
-	cache_control += (opts['private'] ? 'private' : 'public') + ',';
+	var cache_options = [];
+	if (opts['duration']) cache_options.push(`max-age=${opts['duration']}`);
+	cache_options.push((opts['private'] ? 'private' : 'public'))
 	if (opts['validate']) {
-		cache_control += 'no-cache,';
-		cache_control += 'must-revalidate,';
+		cache_options.push('no-cache');
+		cache_options.push('must-revalidate');
 	}
-	if (!opts['transform']) cache_control += 'no-transform,';
-	res.setHeaders({ 'Cache-Control': cache_control.slice(0, -1), 'Expires': new Date(Date.now() + (parseInt(opts['duration']) * 1000)).toUTCString() });
+	if (!opts['transform']) cache_options.push('no-transform');
+	res.setHeaders({ 'Cache-Control': cache_options.join(","), 'Expires': new Date(Date.now() + (parseInt(opts['duration']) * 1000)).toUTCString() });
 	return;
 }
 exports.check = function(req, etag) {

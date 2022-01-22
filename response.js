@@ -11,12 +11,12 @@ var res = module.exports = Object.create(http.ServerResponse.prototype);
 
 exports = module.exports = function(response) {
   Object.setPrototypeOf(response, res);
-}
+};
 
 res.send = function(chunk, type) {
   if (!chunk) throw new TypeError('res.send() argument chunk is required');
   if (typeof chunk === 'string') this.setHeader('Content-Type', mime.lookup(type ? type : 'txt'));
-  if (this.cache) if (cache.check(this.req, etag(chunk))) return; 
+  if (this.cache) if (cache.check(this.req, etag(chunk))) return;
   this.end(Buffer.from(chunk, 'utf8'), 'utf8');
   return;
 };
@@ -50,3 +50,10 @@ res.setHeaders = function(headers) {
   for (const head of Object.keys(headers)) this.setHeader(head, headers[head]);
   return this;
 };
+res.removeHeaders = function(headers) {
+  if (!headers) throw new TypeError('res.removeHeaders() argument headers is required');
+  for (const head of headers) {
+    this.removeHeader(head);
+  }
+  return;
+}

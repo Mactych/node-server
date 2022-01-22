@@ -14,39 +14,12 @@ exports = module.exports = function(request) {
     request.cookie = request.headers['cookie'] ? utils.cookie(request.headers['cookie']) : {};
 }
 
-/**
- * check protocol
- *
- * @returns {String} - returns 'https' or 'http'
- * @public
- */
 utils.defineGetter(req, 'protocol', function() {
     return this.connection.encrypted ? 'https' : 'http';
 });
-/**
- * check if secure
- * @returns {Boolean}
- */
 utils.defineGetter(req, 'secure', function() {
     return this.protocol === 'https';
 });
-
-/**
- * request host
- *
- * @return {String}
- * @public
- */
 utils.defineGetter(req, 'host', function() {
     return this.headers['host'];
-});
-
-/**
- * Return the path used for the request
- *
- * @returns {String}
- * @public
- */
-utils.defineGetter(req, 'path', function() {
-    return this.url;
 });

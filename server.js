@@ -15,4 +15,4 @@ exports = module.exports = function(defaultRoute) {
 exports.etag = require('./etag.js');
 exports.router = require('./router.js');
 exports.cache = require('./cache.js');
-exports.cors = require('./cache.js');
+exports.cors = require('./cors.js');

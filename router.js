@@ -129,12 +129,6 @@ const router = exports = module.exports = function() {
       }
     });
   }
-  this.cache = function(options) {
-    this.use(function(req, res, next) {
-      cache(res, options);
-      next();
-    });
-  }
 }
 
 /**
