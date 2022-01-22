@@ -29,6 +29,7 @@ res.json = function(json) {
   return this.send(JSON.stringify(json), 'json');
 };
 res.sendStatus = function(status) {
+  if (!status) throw new TypeError('res.sendStatus() argument status is required');
   this.writeHead(status);
   this.end();
   return this;
@@ -49,9 +50,3 @@ res.setHeaders = function(headers) {
   for (const head of Object.keys(headers)) this.setHeader(head, headers[head]);
   return this;
 };
-res.removeHeaders = function(headers = []) {
-  for (const header of headers) {
-    res.removeHeader(header);
-  }
-  return this;
-}

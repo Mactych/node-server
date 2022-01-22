@@ -15,6 +15,7 @@
     * Add: req/res now have links to each other
     * Update: better management for options
     * Update: now using single quotes '' to be more consistent.
+    * Update: added missing error throwing in response
 
 1.0.7 / 2022-01-16
 ===================
