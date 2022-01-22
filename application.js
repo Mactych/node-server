@@ -1,36 +1,31 @@
-const Utils = require("./utilities.js");
-const Response = require("./response.js");
-const Request = require("./request.js");
-const http = require("http");
+const utils = require('./utilities.js');
+const response = require('./response.js');
+const request = require('./request.js');
+const http = require('http');
 var application = exports = module.exports = {};
-application.init = function () {
-    this._virtuals = [];
-}
-application.handleRoute = function (req, res) {
-    // EXTENDED: Set and remove query from url
-    req.query = Utils.query(req.url);
-    req.url = req.url.lastIndexOf("?") != -1 ? req.url.slice(0, req.url.lastIndexOf("?")) : req.url;
-    Object.setPrototypeOf(req, Request);
-    Object.setPrototypeOf(res, Response);
+application._virtuals = [];
+application.handle = function(req, res) {
+    req.res = res;
+    res.req = req;
+    request(req);
+    response(res);
     for (const v of this._virtuals) {
-        if (!Utils.wildcard(v._domain, req.host)) continue;
-        if (v._router.handle(req, res)) return;
+        if (!utils.wildcard(v._domain, req.host)) continue;
+        if (v._router._handle(req, res)) return;
     }
-    if (req.method === "OPTIONS") res.end();
-    return;
-}
-application.virtual = function (domain, router) {
-    if (typeof domain === "object") {
-        for (const d of domain) {
-            this._virtuals.push({ _domain: d, _router: router });
-        }
-        return;
+    if (req.method === 'OPTIONS') return res.end();
+    return res.status(404).end();
+};
+application.virtual = function(domain, router) {
+    if (typeof domain === 'object') {
+        for (const d of domain) this._virtuals.push({ _domain: d, _router: router });
     } else {
         this._virtuals.push({ _domain: domain, _router: router });
     }
     return;
 };
-application.listen = function (port, callback) {
+application.listen = function(port, callback) {
+    if (this._virtuals.length <= 0) throw new TypeError("app.listen() requires you to setup some virtual hosts");
     http.createServer(this).listen(port);
     if (callback) callback(port);
-}
+};

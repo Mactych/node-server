@@ -1,3 +1,21 @@
+1.0.8 / 2022-01-18
+===================
+
+    * Fix: issue where if there was no query the url would be put into the req.query variable
+    * Update: name of the handle function for application.js
+    * Update: automatically end request once all routes have been resolved if method - OPTIONS, HEAD
+    * Update: request add semicolons where missing
+    * Fix: spelling errors within readme file
+    * Update: End the request with a 404 if it was not resolved.
+    * Update: rework how requests and responses are handled
+    * Update: don't modify req.url instead create req.path with the querystring excluded
+    * Add: support for Etag's
+    * Add: cache manager to add appropriate cache headers, can be called by router.cache();s
+    * Update: router name changed server.Router() -> server.router()
+    * Add: req/res now have links to each other
+    * Update: better management for options
+    * Update: now using single quotes '' to be more consistent.
+
 1.0.7 / 2022-01-16
 ===================
 
@@ -8,7 +26,7 @@
 ===================
 
     * Support: OPTIONS method, automatically resolves after all routes have completed
-    * Supoprt: HEAD method can be initated using the router.head(url, route) function
+    * Support: HEAD method can be initiated using the router.head(url, route) function
 
 1.0.5 / 2022-01-15
 ===================
@@ -18,7 +36,7 @@
 1.0.4 / 2022-01-15
 ===================
 
-    * Remove: query encodeuricomponent
+    * Remove: query encodeURICompontent for more flexibility
 
 1.0.3 / 2022-01-15
 ===================
@@ -36,14 +54,14 @@
     * Update: the params function to make params faster, and more reliable
     * Update: error handling when arguments aren't specified within the utils
     * Fix: static video in byte range would always stay Content-Type=video/mp4
-    * Update: response functions throw error if insufficent arguments
+    * Update: response functions throw error if insufficient arguments
     * Add: response function res.sendStatus(statusCode)
     * Add: getter req.path
 
 1.0.0 / 2022-01-13
 ===================
 
-    * Add: correct functions within the Reponse.
+    * Add: correct functions within the Response.
         - Update: res.send() to use the proper 'utf8' encoding
         - Create: res.html() use to send HTML code this will set the correct content type
         - Create: res.json() use to send JSON
@@ -58,6 +76,6 @@
     * Change: make middleware functions not use a path
     * Fix: route would not be used if it ended with '/' because it was always removed, this issue is fixed
     * Add: support for byte ranges with static content
-    * Fix: issue where when middlewares were appended to another route it would get a path when not needed
+    * Fix: issue where when middleware's were appended to another route it would get a path when not needed
     * Add: support for not requiring to use .html when serving static files - default is true can be set using static options.requireHTMLExtension
     * Rename: the req.cookie getter to req.cookies, this is more logical
