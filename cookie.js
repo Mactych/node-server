@@ -12,6 +12,7 @@ exports = module.exports = function(req, res, next) {
 	res.setCookie = function(options, value) {
 		if (!options) throw new TypeError('res.setCookie() argument options is required');
 		if (!value) throw new TypeError('res.setCookie() argument value is required');
+		if (value.length > 4000) throw new TypeError('res.setCookie value must be below 4kb');
 		const payload = [];
 		const opts = {
 			value: value,
