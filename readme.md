@@ -4,23 +4,23 @@ This was built to be as performant and straightforward as possible whilst keepin
 ## How to use
 Firstly declare the server class, example below.
 ```javascript
-const webserver = new (require("./server.js"))();
+const webserver = require("macserver");
 ```
 Create a new virtual site (this site will only respond to the hostname you provide)
 ```javascript
-const api = new webserver.Route();
-const route = new webserver.Route();
+const api = new webserver.router();
+const app = new webserver.router();
 // add route -> all request in the api route will point .../api
-route.use("/api" api);
+app.use("/api" api);
 // setup the middleware
-route.use("/", (req, res, next) => {
+app.use("/", (req, res, next) => {
     console.log(`middlewhare: ${req.url}`);
     next();
 });
 // get request
-route.get("/", (req, res) => {
+app.get("/", (req, res) => {
     res.write("hello world!");
     res.end();
 });
-const site = new webserver.virtual("domainhere.com", route);
+const site = new webserver.virtual("domainhere.com", app);
 ```

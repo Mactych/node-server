@@ -102,11 +102,17 @@ utils.query = function(url) {
  * @returns {Object} - all the cookies sorted into an object
  */
 utils.cookie = function(cookie) {
-    if (!cookie) throw new TypeError('utils.cookie() argument cookie is required');
-    return cookie.split(';').map(v => v.split('=')).reduce((acc, v) => {
-        acc[decodeURIComponent(v[0].trim())] = decodeURIComponent(v[1].trim());
-        return acc;
+    const list = {};
+    if (!cookie) return list;
+    cookie.split(`;`).forEach(function(c) {
+        let [ name, ...rest] = c.split(`=`);
+        name = name?.trim();
+        if (!name) return;
+        const value = rest.join(`=`).trim();
+        if (!value) return;
+        list[name] = decodeURIComponent(value);
     });
+    return list;
 }
 utils.mergeObject = function(src, dest, redefine) {
     if (!src) throw new TypeError('utils.mergeObject() argument src is required');

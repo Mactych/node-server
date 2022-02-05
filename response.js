@@ -12,14 +12,18 @@ var res = module.exports = Object.create(http.ServerResponse.prototype);
 exports = module.exports = function(response) {
   Object.setPrototypeOf(response, res);
 };
-
 res.send = function(chunk, type) {
   if (!chunk) throw new TypeError('res.send() argument chunk is required');
   if (typeof chunk === 'string') this.setHeader('Content-Type', mime.lookup(type ? type : 'txt'));
-  if (this.cache) if (cache.check(this.req, etag(chunk))) return;
+  if (this.cache)
+    if (cache.check(this.req, etag(chunk))) return;
   this.end(Buffer.from(chunk, 'utf8'), 'utf8');
   return;
 };
+res.type = function(ext) {
+  if (!ext) throw new TypeError('res.type() argument ext is required');
+  this.setHeader('content-type', mime.lookup('.' + ext));
+}
 res.html = function(html) {
   if (!html) throw new TypeError('res.html() argument html is required');
   return this.send(html, 'html');

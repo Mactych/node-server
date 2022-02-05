@@ -19,6 +19,9 @@
     * Remove: not needed getter definitions in request
     * Fix: path getter redefining over req.path
     * Add: a new CORS handler which can be called using server.cors(res, options)
+    * Update: fix the cookie function to not throw error when parsing empty cookie
+    * Add: the cookie handler which can be applied using route.use(server.cookie)
+    * Update: small code enhancements
 
 1.0.7 / 2022-01-16
 ===================

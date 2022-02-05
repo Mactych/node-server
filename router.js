@@ -57,8 +57,8 @@ const router = exports = module.exports = function() {
     };
     utils.copyProperties(options, opts, ["requireHTMLExtension"]);
     this.use(function(req, res, next) {
-      if (!['GET', 'HEAD', 'OPTIONS'].includes(req.method) || !req.url.startsWith(path)) return next();
-      var urlPath = decodeURIComponent(req.url.substring(path.length) ? req.url.substring(path.length) : '/');
+      if (!['GET', 'HEAD', 'OPTIONS'].includes(req.method) || !req.path.startsWith(path)) return next();
+      var urlPath = decodeURIComponent(req.path.substring(path.length) ? req.path.substring(path.length) : '/');
       var filePath = directory + (directory.endsWith('/') ? '' : '/') + urlPath;
       if (!filePath.startsWith('/')) filePath = '/' + filePath;
       if (filePath.endsWith('/')) filePath += 'index.html';
@@ -78,7 +78,7 @@ const router = exports = module.exports = function() {
 
       const type = mime.lookup(filePath);
       if (type) res.setHeader('Content-Type', type);
-      
+
       if (cache.check(req, etag(stat, { weak: true }))) return;
       if (req.headers['range']) {
         const range = req.headers['range'];
@@ -192,7 +192,7 @@ router.prototype._handle = function(req, res) {
       parsed = utils.params(r.path, req.url);
       if (parsed.params) req.params = parsed.params;
     }
-    if (!utils.wildcard((parsed.path ? parsed.path : r.path), (r.path.endsWith('/') ? req.url : (req.url.substr(1).endsWith('/') ? req.url.slice(0, -1) : req.url)))) continue;
+    if (!utils.wildcard((parsed.path ? parsed.path : r.path), (r.path.endsWith('/') ? req.url : (req.path.substr(1).endsWith('/') ? req.path.slice(0, -1) : req.path)))) continue;
     /// if (r.method === req.method || r.method === 'GET' && req.method === 'HEAD') {
     if (r.method === req.method) {
       r.route(req, res);
