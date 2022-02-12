@@ -9,7 +9,7 @@ var req = Object.create(http.IncomingMessage.prototype);
 
 exports = module.exports = function(request) {
     Object.setPrototypeOf(request, req);
-    request.query = utils.query(request.url);
+    request.query = request.url.lastIndexOf('?') != -1 ? utils.query(request.url.slice(request.url.lastIndexOf('?') + 1)) : {};
     request.path = request.url.lastIndexOf('?') != -1 ? request.url.slice(0, request.url.lastIndexOf('?')) : request.url;
     request.cookie = request.headers['cookie'] ? utils.cookie(request.headers['cookie']) : {};
 }

@@ -6,8 +6,11 @@
 const utils = require("./utilities.js");
 
 exports = module.exports = function(req, res, next) {
-	res.removeCookie = function(options, value) {
-
+	res.removeCookie = function(key) {
+		if (!key) throw new TypeError('res.removeCookie() argument key is required');
+		req.cookieQueue = (req.cookieQueue ? req.cookieQueue : []);
+		req.cookieQueue.push(`${key}=; Max-Age=0;`);
+		this.setHeader("set-cookie", req.cookieQueue);
 	}
 	res.setCookie = function(options, value) {
 		if (!options) throw new TypeError('res.setCookie() argument options is required');

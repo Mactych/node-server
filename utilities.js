@@ -38,47 +38,15 @@ utils.defineGetter = function(obj, name, getter) {
 utils.params = function(rule, path) {
     if (!rule) throw new TypeError('utils.params() argument rule is required');
     if (!path) throw new TypeError('utils.params() argument path is required');
-    const keys = [];
-    var addKey = false;
-    var compare = true;
-    var wildcard = '';
-    var removed = '';
-    const params = {};
-    var keyChars = rule.split('');
-    var valueChars = path.split('');
-    if (rule.startsWith('/') && path.startsWith('/')) {
-        removed += '/';
-        keyChars = keyChars.splice(1, keyChars.length);
-        valueChars = valueChars.splice(1, valueChars.length);
+    const pathSplit = path.split("/");
+    const ruleSplit = rule.split("/");
+    const keys = {};
+    const wildcard = [];
+    for (const part in ruleSplit) {
+        wildcard.push(ruleSplit[part].startsWith(":") ? "*" : ruleSplit[part]);
+        if (ruleSplit[part].startsWith(":") && ruleSplit[part] && pathSplit[part]) keys[ruleSplit[part].substring(1)] = pathSplit[part];
     }
-    for (var index in keyChars) {
-        index = parseInt(index);
-        const c = keyChars[index];
-        const v = valueChars[index];
-        if (compare && c === v) {
-            removed += c;
-            continue;
-        } else compare = false;
-        if (c === ':') {
-            addKey = true;
-            keys.push('');
-            continue;
-        }
-        if (c != '/' && addKey) keys[keys.length - 1] += c;
-        if (c === '/' || index === keyChars.length - 1) addKey = false;
-    }
-    valueChars = valueChars.join('');
-    valueChars = valueChars.slice(removed.length - 1, valueChars.length);
-    valueChars = valueChars.split('/');
-    wildcard = rule;
-    for (var index in keys) {
-        index = parseInt(index);
-        const key = keys[index];
-        const value = valueChars[index];
-        wildcard = wildcard.replaceAll(`:${key}`, '*');
-        if (key && value) params[key] = value;
-    }
-    return { path: wildcard, params: params };
+    return { path: wildcard.join("/"), params: keys };
 }
 /**
  * extracts the queries from a url
@@ -87,7 +55,6 @@ utils.params = function(rule, path) {
  */
 utils.query = function(url) {
     if (!url) throw new TypeError('utils.query() argument url is required');
-    url = url.lastIndexOf('?') != -1 ? url.slice(url.lastIndexOf('?') + 1, url.length) : '';
     const queries = {};
     var vars = url.split('&');
     for (var i = 0; i < vars.length; i++) {

@@ -17,3 +17,4 @@ exports.router = require('./router.js');
 exports.cache = require('./cache.js');
 exports.cors = require('./cors.js');
 exports.cookie = require('./cookie.js');
+exports.utilities = require('./utilities.js');

@@ -1,3 +1,14 @@
+1.1.3 / 2022-02-12
+===================
+
+    * Update: fix the utils.params function to be more accurate and performant
+
+1.1.2 / 2022-02-06
+===================
+
+    * Update: make utils.query only decode
+    * Add: make the query string be parsed outside of the function
+
 1.0.8 / 2022-01-18
 ===================
 
