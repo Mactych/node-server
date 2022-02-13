@@ -2,6 +2,7 @@
 ===================
 
     * Update: fix the utils.params function to be more accurate and performant
+    * Update: fix the utils.params from parsing the req.url to instead parse req.path
 
 1.1.2 / 2022-02-06
 ===================

@@ -45,7 +45,7 @@ utils.params = function(rule, path) {
     for (const part in ruleSplit) {
         wildcard.push(ruleSplit[part].startsWith(":") ? "*" : ruleSplit[part]);
         if (ruleSplit[part].startsWith(":") && ruleSplit[part] && pathSplit[part]) keys[ruleSplit[part].substring(1)] = pathSplit[part];
-    }
+    }``
     return { path: wildcard.join("/"), params: keys };
 }
 /**
