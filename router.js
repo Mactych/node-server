@@ -193,7 +193,6 @@ router.prototype._handle = function(req, res) {
       if (parsed.params) req.params = parsed.params;
     }
     if (!utils.wildcard((parsed.path ? parsed.path : r.path), (r.path.endsWith('/') ? req.path : (req.path.substr(1).endsWith('/') ? req.path.slice(0, -1) : req.path)))) continue;
-    console.log(req.path);
     if (r.method === req.method) {
       r.route(req, res);
       return true;
