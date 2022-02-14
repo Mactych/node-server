@@ -176,12 +176,12 @@ router.prototype._delete = function(method, path) {
  * @returns {bool} resolved
  * @private
  */
-router.prototype._handle = function(req, res) {
+router.prototype._handle = async function(req, res) {
   for (const r of this._stack) {
     var parsed = {};
     if (r.method === 'MIDDLEWARE') {
       var next = false;
-      r.route(req, res, () => next = true);
+      await r.route(req, res, () => next = true);
       if (next) {
         continue;
       } else if (!next) {
@@ -194,7 +194,7 @@ router.prototype._handle = function(req, res) {
     }
     if (!utils.wildcard((parsed.path ? parsed.path : r.path), (r.path.endsWith('/') ? req.path : (req.path.substr(1).endsWith('/') ? req.path.slice(0, -1) : req.path)))) continue;
     if (r.method === req.method) {
-      r.route(req, res);
+      await r.route(req, res);
       return true;
     }
   }
