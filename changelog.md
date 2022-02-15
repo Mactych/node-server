@@ -1,3 +1,15 @@
+1.1.8 / 2022-02-14
+===================
+
+    * Add: parser which can be invoked using server.parser(req) within a middleware
+        * Supports: 'application/json', 'application/x-www-form-urlencoded', 'text/plain'
+    * Add: CORS will now send extra 'allow' header for better compatibility
+    * Add: routes and middlewares can now be asynchronous
+    * Update: routes are now skipped if method is 'OPTIONS', but still cycles through middlewares
+    * Fix: bug where CORS was enabling Etag for requests
+    * Update: cache remove default opts values
+    * Add: support for manually getting request data to buffer using server.parser.data function
+
 1.1.6 / 2022-02-14
 ===================
 

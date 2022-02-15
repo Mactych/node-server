@@ -190,6 +190,8 @@ router.prototype._handle = async function(req, res) {
       }
     }
     
+    if (req.method === 'OPTIONS') continue;
+    
     if (r.path.includes(':')) {
       parsed = utils.params(r.path, req.path);
       if (parsed.params) req.params = parsed.params;

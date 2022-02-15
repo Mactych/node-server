@@ -14,14 +14,20 @@ exports = module.exports = function(res, options) {
         // header: '*'
     };
     utils.copyProperties(options, opts, ['origin', 'method', 'header']);
-    res.cache = opts;
+    res.cors = opts;
     const headers = {};
 
     if (opts.origin === '*') headers['Access-Control-Allow-Origin'] = '*';
     if (Array.isArray(opts.origin)) headers['Access-Control-Allow-Origin'] = opts.origin.join(',');
 
-    if (opts.method === '*') headers['Access-Control-Allow-Methods'] = '*';
-    if (Array.isArray(opts.method)) headers['Access-Control-Allow-Methods'] = opts.method.join(',').toUpperCase();
+    if (opts.method === '*') {
+        headers['Allow'] = '*';
+        headers['Access-Control-Allow-Methods'] = '*';
+    }
+    if (Array.isArray(opts.method)) {
+        headers['Allow'] = opts.method.join(',');
+        headers['Access-Control-Allow-Methods'] = opts.method.join(',').toUpperCase();
+    }
 
     if (opts.header === '*') headers['Access-Control-Allow-Headers'] = '*';
     if (Array.isArray(opts.header)) headers['Access-Control-Allow-Headers'] = opts.header.join(',');

@@ -9,21 +9,24 @@ exports = module.exports = function(res, options = {}) {
 	if (!res) throw new TypeError('cache() argument res is required');
 	if (!options || typeof options != 'object') throw new TypeError('cache() argument options is required');
 	const opts = {
-		validate: true,
-		transform: true,
-		private: false,
+		// validate: true,
+		// transform: true,
+		// private: false,
 	};
 	utils.copyProperties(options, opts, ['validate', 'transform', 'private', 'duration']);
 	res.cache = opts;
 	var cache_options = [];
 	if (opts['duration']) cache_options.push(`max-age=${opts['duration']}`);
-	cache_options.push((opts['private'] ? 'private' : 'public'))
+	if (opts['private'] != undefined) cache_options.push((opts['private'] ? 'private' : 'public'));
 	if (opts['validate']) {
 		cache_options.push('no-cache');
 		cache_options.push('must-revalidate');
 	}
-	if (!opts['transform']) cache_options.push('no-transform');
-	res.setHeaders({ 'Cache-Control': cache_options.join(","), 'Expires': new Date(Date.now() + (parseInt(opts['duration']) * 1000)).toUTCString() });
+	if (opts['transform'] != undefined && !opts['transform']) cache_options.push('no-transform');
+	const headers = {};
+	if (cache_options.length > 0) headers['Cache-Control'] = cache_options.join(",");
+	if (opts['duration']) headers['Expires'] = new Date(Date.now() + (parseInt(opts['duration']) * 1000)).toUTCString();
+	res.setHeaders(headers);
 	return;
 }
 exports.check = function(req, etag) {
