@@ -26,17 +26,20 @@ exports = module.exports = async function(req) {
         try {
             switch (req.headers['content-type']) {
                 case 'text/plain':
-                    req.body = (await data(req)).toString();
+                    const d1 = (await data(req)).toString();
+                    req.body = d1 ? d1 : "";
                     break;
                 case 'application/x-www-form-urlencoded':
-                    req.body = utils.query((await data(req)).toString());
+                    const d2 = (await data(req)).toString();
+                    req.body = d2 ? utils.query(d2) : {};
                     break;
                 case 'application/json':
-                    req.body = JSON.parse((await data(req)).toString());
+                    const d3 = (await data(req)).toString();
+                    req.body = d3 ? JSON.parse(d3) : {};
                     break;
             }
             resolve();
-        } catch(e) {
+        } catch (e) {
             reject(e);
         }
     });
