@@ -1,3 +1,9 @@
+1.2.0 / 2022-02-14
+===================
+
+    * Update: disable Etag on static content if cache is not enabled
+    * Fix: bug where request would not be parsed if it had a charset
+
 1.1.9 / 2022-02-14
 ===================
 

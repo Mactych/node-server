@@ -79,7 +79,7 @@ const router = exports = module.exports = function() {
       const type = mime.lookup(filePath);
       if (type) res.setHeader('Content-Type', type);
 
-      if (cache.check(req, etag(stat, { weak: true }))) return;
+      if (res.cache && cache.check(req, etag(stat, { weak: true }))) return;
       if (req.headers['range']) {
         const range = req.headers['range'];
         const total = stat.size;
@@ -125,7 +125,6 @@ const router = exports = module.exports = function() {
           return;
         };
         buffer.pipe(res, { end: true });
-        // res.end(buffer);
       }
     });
   }
@@ -178,8 +177,6 @@ router.prototype._delete = function(method, path) {
  */
 router.prototype._handle = async function(req, res) {
   for (const r of this._stack) {
-    var parsed = {};
-    
     if (r.method === 'MIDDLEWARE') {
       var next = false;
       await r.route(req, res, () => next = true);
@@ -189,9 +186,9 @@ router.prototype._handle = async function(req, res) {
         return true;
       }
     }
-    
     if (req.method === 'OPTIONS') continue;
     
+    var parsed = {};
     if (r.path.includes(':')) {
       parsed = utils.params(r.path, req.path);
       if (parsed.params) req.params = parsed.params;
