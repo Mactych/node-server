@@ -12,15 +12,12 @@ const api = new webserver.router();
 const app = new webserver.router();
 // add route -> all request in the api route will point .../api
 app.use("/api" api);
-// setup the middleware
 app.use("/", (req, res, next) => {
-    console.log(`middlewhare: ${req.url}`);
+    console.log(`middleware: ${req.url}`);
     next();
 });
-// get request
 app.get("/", (req, res) => {
-    res.write("hello world!");
-    res.end();
+    res.send("hello world!");
 });
 const site = new webserver.virtual("domainhere.com", app);
 ```
