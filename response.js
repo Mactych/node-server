@@ -55,8 +55,6 @@ res.setHeaders = function(headers) {
 };
 res.removeHeaders = function(headers) {
   if (!headers) throw new TypeError('res.removeHeaders() argument headers is required');
-  for (const head of headers) {
-    this.removeHeader(head);
-  }
+  for (const head of headers) this.removeHeader(head);
   return;
 }

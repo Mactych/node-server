@@ -1,8 +1,16 @@
+1.2.1 / 2022-03-12
+===================
+
+    * Update: middlewares can now use paths
+    * Update: static is now a separate middleware, not built into the router
+    * Update: routes are now called allowing access to the this.path
+
 1.2.0 / 2022-02-14
 ===================
 
     * Update: disable Etag on static content if cache is not enabled
     * Fix: bug where request would not be parsed if it had a charset
+    * Update: remove the port from the host when selecting a host
 
 1.1.9 / 2022-02-14
 ===================

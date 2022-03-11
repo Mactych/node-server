@@ -10,8 +10,8 @@ application.handle = async function(req, res) {
     request(req);
     response(res);
     for (const v of this._virtuals) {
-        if (!utils.wildcard(v._domain, req.host)) continue;
-        if (await v._router._handle(req, res)) return;
+        if (!utils.wildcard(v._domain, req.host.split(":")[0])) continue;
+        if (await v._router.handle(req, res)) return;
     }
     if (req.method === 'OPTIONS') return res.end();
     return res.status(404).end();
