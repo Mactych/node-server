@@ -15,7 +15,7 @@ const router = exports = module.exports = function() {
     this[m.toLowerCase()] = function() {
       if (typeof arguments[0] != 'string') throw TypeError('route.add() invalid path');
       if (typeof arguments[1] != 'function') throw TypeError('route.add() invalid route');
-      this._add(m, arguments[0], arguments[1]);
+      this.add(m, arguments[0], arguments[1]);
     }
   }
   /**

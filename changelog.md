@@ -1,4 +1,4 @@
-1.2.1 / 2022-03-12
+1.2.2 / 2022-03-12
 ===================
 
     * Update: middlewares can now use paths
