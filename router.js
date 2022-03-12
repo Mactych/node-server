@@ -8,7 +8,7 @@ const mime = require('./mime.js');
 const etag = require('./etag.js');
 const cache = require('./cache.js');
 const fs = require('fs');
-const methods = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'];
+const methods = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'PURGE'];
 const router = exports = module.exports = function() {
   this._stack = [];
   for (const m of methods) {
