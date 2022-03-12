@@ -15,7 +15,7 @@ const router = exports = module.exports = function() {
     this[m.toLowerCase()] = function() {
       if (typeof arguments[0] != 'string') throw TypeError('route.add() invalid path');
       if (typeof arguments[1] != 'function') throw TypeError('route.add() invalid route');
-      this.add(m, arguments[0], arguments[1]);
+      this._add(m, arguments[0], arguments[1]);
     }
   }
   /**
@@ -31,18 +31,19 @@ const router = exports = module.exports = function() {
       return;
     }
     if (typeof arguments[0] === 'string' && typeof arguments[1] === 'object' && arguments[1]._stack) {
-      for (const r of arguments[1]._stack) if (r.path) r.path = arguments[0] + (r.path === '/' ? '' : r.path);
+      for (const r of arguments[1]._stack)
+        if (r.path) r.path = arguments[0] + (r.path === '/' ? '' : r.path);
       this._stack = this._stack.concat(arguments[1]._stack);
       arguments[1]._path = arguments[0];
       arguments[1]._stack = this._stack;
       return;
     }
     if (typeof arguments[0] === 'string' && typeof arguments[1] === 'function' && !arguments[1]._stack) {
-      this.add('MIDDLEWARE', arguments[0], arguments[1]);
+      this._add('MIDDLEWARE', arguments[0], arguments[1]);
       return;
     }
     if (typeof arguments[0] === 'function' && !arguments[0]._stack) {
-      this.add('MIDDLEWARE', arguments[0]);
+      this._add('MIDDLEWARE', arguments[0]);
       return;
     }
     throw new TypeError('route.use() not a valid middleware or router to pass in');
@@ -57,7 +58,7 @@ const router = exports = module.exports = function() {
  * @param {Object} route
  * @private
  */
-router.prototype.add = function() {
+router.prototype._add = function() {
   const options = { method: arguments[0] };
   if (typeof arguments[1] === 'string' && typeof arguments[2] === 'function') {
     // default
@@ -77,7 +78,7 @@ router.prototype.add = function() {
  * @param {string} path
  * @private
  */
-router.prototype.delete = function(method, path) {
+router.prototype._delete = function(method, path) {
   method = method.toUpperCase();
   if (method === 'MIDDLEWARE') throw TypeError('router._delete() cannot delete middlware');
   for (const index in this._stack) {
@@ -96,7 +97,7 @@ router.prototype.delete = function(method, path) {
  * @returns {bool} resolved
  * @private
  */
-router.prototype.handle = async function(req, res) {
+router.prototype._handle = async function(req, res) {
   for (const r of this._stack) {
     if (r.method === 'MIDDLEWARE') {
       if (r.path && !utils.wildcard(r.path, req.path)) continue;
@@ -110,13 +111,13 @@ router.prototype.handle = async function(req, res) {
     }
     if (req.method === 'OPTIONS') continue;
 
-    var parsed = {path: r.path};
+    var parsed = { path: r.path };
     if (r.path.includes(':')) {
       parsed = utils.params(r.path, req.path);
       if (parsed.path) path = parsed.path;
       if (parsed.params) req.params = parsed.params;
     }
-    if (!utils.wildcard(parsed.path.endsWith('/') ? parsed.path.slice(0,-1) : parsed.path, (req.path.endsWith('/') ? req.path.slice(0,-1) : req.path))) continue;
+    if (!utils.wildcard(parsed.path, (parsed.path.endsWith('/') ? req.path : (req.path.substr(1).endsWith('/') ? req.path.slice(0, -1) : req.path)))) continue;
     if (r.method === req.method) {
       await r.route.call(r, req, res);
       return true;
