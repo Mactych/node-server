@@ -8,15 +8,16 @@ const utils = require("./utilities.js");
 function data(req) {
     return new Promise((resolve, reject) => {
         const content = [];
-        req.on("data", (d) => {
-            content.push(d);
-        }).on("end", () => {
+        function finish() {
             try {
                 resolve(Buffer.concat(content));
             } catch (e) {
                 reject(e);
             }
-        });
+        }
+        req.on("data", (d) => {
+            content.push(d);
+        }).on("end", finish).on("close", finish);
     });
 }
 

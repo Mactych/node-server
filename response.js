@@ -16,7 +16,9 @@ res.send = function(chunk, type) {
   if (!chunk) throw new TypeError('res.send() argument chunk is required');
   if (typeof chunk === 'string') this.setHeader('Content-Type', mime.lookup(type ? type : 'txt'));
   if (this.cache) if (cache.check(this.req, etag(chunk))) return;
-  this.end(Buffer.from(chunk, 'utf8'), 'utf8');
+  const buffer = Buffer.from(chunk, 'utf8');
+  this.setHeader('Content-Length', buffer.length);
+  this.end(buffer, 'utf8');
   return;
 };
 res.type = function(ext) {
