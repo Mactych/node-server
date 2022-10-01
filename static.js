@@ -32,7 +32,7 @@ exports = module.exports = function(directory, options = {}) {
 		}
 		const stat = fs.statSync(file.path);
 		if (!file.path.endsWith('/') && stat.isDirectory()) {
-			if (fs.existsSync(`${file.path}index.html`)) {
+			if (fs.existsSync(`${file.path}/index.html`)) {
 				return res.redirect(req.path + '/');
 			}
 			return next();

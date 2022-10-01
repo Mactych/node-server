@@ -29,9 +29,9 @@ res.html = function(html) {
   if (!html) throw new TypeError('res.html() argument html is required');
   return this.send(html, 'html');
 };
-res.json = function(json) {
+res.json = function(json, beautify) {
   if (!json) throw new TypeError('res.json() argument json is required');
-  return this.send(JSON.stringify(json), 'json');
+  return this.send(beautify ? JSON.stringify(json, null, 4) : JSON.stringify(json), 'json');
 };
 res.sendStatus = function(status) {
   if (!status) throw new TypeError('res.sendStatus() argument status is required');

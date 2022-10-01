@@ -44,9 +44,17 @@ utils.params = function(rule, path) {
     const wildcard = [];
     for (const part in ruleSplit) {
         wildcard.push(ruleSplit[part].startsWith(":") ? "*" : ruleSplit[part]);
-        if (ruleSplit[part].startsWith(":") && ruleSplit[part] && pathSplit[part]) keys[ruleSplit[part].substring(1)] = pathSplit[part];
+        if (ruleSplit[part].startsWith(":") && ruleSplit[part]) keys[ruleSplit[part].substring(1)] = pathSplit[part];
     };
-    return { path: wildcard.join("/"), params: keys };
+    const final = [];
+    for (const part in wildcard) {
+        if (wildcard[part] != "*") {
+            final.push(wildcard[part]);
+        } else {
+            final.push(pathSplit[part]);
+        }
+    }
+    return { path: wildcard.join("/"), params: keys, valid: path == final.join('/') || path == final.join('/')+'/' };
 }
 /**
  * extracts the queries from a url
@@ -72,7 +80,7 @@ utils.cookie = function(cookie) {
     const list = {};
     if (!cookie) return list;
     cookie.split(`;`).forEach(function(c) {
-        let [ name, ...rest] = c.split(`=`);
+        let [name, ...rest] = c.split(`=`);
         name = name?.trim();
         if (!name) return;
         const value = rest.join(`=`).trim();

@@ -6,10 +6,15 @@
 const utils = require("./utilities.js");
 
 exports = module.exports = function(req, res, next) {
-	res.removeCookie = function(key) {
+	res.removeCookie = function(key, path, domain) {
 		if (!key) throw new TypeError('res.removeCookie() argument key is required');
+		const options = [];
+		options.push(`${key}=`);
+		options.push(`Max-Age=0`);
+		if (path) options.push(`Path=${path}`);
+		if (domain) options.push(`Domain=${domain}`);
 		req.cookieQueue = (req.cookieQueue ? req.cookieQueue : []);
-		req.cookieQueue.push(`${key}=; Max-Age=0;`);
+		req.cookieQueue.push(options.join('; '));
 		this.setHeader("set-cookie", req.cookieQueue);
 	}
 	res.setCookie = function(options, value) {
@@ -19,6 +24,7 @@ exports = module.exports = function(req, res, next) {
 		const payload = [];
 		const opts = {
 			value: value,
+			path: "/",
 			// key: "",
 			// path: "/", // Header: Path
 			// age: 0, // Header: Max-Age
